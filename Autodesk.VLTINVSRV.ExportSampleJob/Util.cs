@@ -23,7 +23,7 @@ using Autodesk.DataManagement.Client.Framework.Vault.Settings;
 using Autodesk.DataManagement.Client.Framework.Vault.Results;
 using VDF = Autodesk.DataManagement.Client.Framework;
 
-namespace Autodesk.VLTINVSRV.ExportSampleJob
+namespace Autodesk.VltInvSrv.ExportSampleJob
 {
     public class Util
     {

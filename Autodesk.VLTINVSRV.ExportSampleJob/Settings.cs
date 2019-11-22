@@ -16,7 +16,7 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace Autodesk.VLTINVSRV.ExportSampleJob
+namespace Autodesk.VltInvSrv.ExportSampleJob
 {
 
     [XmlRoot("settings")]
@@ -25,10 +25,15 @@ namespace Autodesk.VLTINVSRV.ExportSampleJob
         [XmlElement("LogFileLocation")]
         public string LogFileLocation;
 
-        #region for future use
-        //[XmlElement("OutputPath")]
-        //public string mOutPutPath;
-        #endregion for future use
+        [XmlElement("ExportFomats")]
+        public string ExportFomats;
+
+        [XmlElement("SmCatDispName")]
+        public string SmCatDispName;
+
+        [XmlElement("OutputPath")]
+        public string OutPutPath;
+
 
         private Settings()
         {

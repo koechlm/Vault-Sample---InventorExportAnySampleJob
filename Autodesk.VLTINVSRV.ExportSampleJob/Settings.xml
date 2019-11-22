@@ -4,7 +4,17 @@
   <!-- Logfile directory; validate for write access -->
   <LogFileLocation>C:\Temp\</LogFileLocation>
   
+  <!-- Export File Format(s)-->
+  <!--  Supported Values/File Formats are: STP, JT, -->
+  <!--  Multiple Outputs per jobs are supported, list all required formats comma separated, e.g., STP, JT, DXF -->
+  <!--  To Export Sheet Metal Flatpattern use either SMSAT or SMDXF - NOTE: distinct category for sheet metal part required, if job handles parts and SM-parts-->
+  <ExportFomats>STP,JT,SMDXF</ExportFomats>
+  
+  <!--Sheet Metal Category Name-->
+  <SmCatDispName>Sheet Metal Part</SmCatDispName>
+  
   <!-- Output Path -->
-  <!--<OutputPath>C:\Temp\Autodesk.STEP.ExportSampleJob\</OutputPath>-->
+  <!--  The job can copy the resulting file(s) to the given output path after check-in-->
+  <OutputPath>C:\Temp\</OutputPath>
 
 </settings>
