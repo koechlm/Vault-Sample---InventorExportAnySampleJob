@@ -47,7 +47,9 @@ VERSION HISTORY / RELEASE NOTES:
 ---------------------------------
 2020.25.1.0 - Added Export-Format Configuration, Output Folder option, named and published as Autodesk.VltInvSrv.ExportSampleJob, 
 				implemented formats are STEP, JT and Sheet Metal Flat Pattern DXF
+				
 2020.25.0.3 - Added Logging, named and published as Autodesk.STEP.ExportSampleJob
+
 2020.25.0.0 - Initial Version, named and published as Autodesk.STEP.ExportSampleJob
  
 ---------------------------------
