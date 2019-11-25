@@ -1,6 +1,6 @@
 # Vault-Inventor-Server EXPORT JOB SAMPLE
 
-This custom job creates Inventor export files using VaultInventorServer.
+This custom job creates Inventor export format files using VaultInventorServer.
 
 INTRODUCTION:
 ---------------------------------
