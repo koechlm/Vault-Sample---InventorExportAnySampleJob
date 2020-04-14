@@ -149,6 +149,10 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             {
                 mExpFrmts = settings.ExportFomats.Split(',').ToList();
             }
+            else
+            {
+                mExpFrmts.Add(settings.ExportFomats);
+            }
 
             //remove SM formats, if source isn't sheet metal
             if (mFile.Cat.CatName != settings.SmCatDispName)
