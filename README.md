@@ -45,11 +45,10 @@ The job expects that all library definition files configured in the Inventor pro
 
 VERSION HISTORY / RELEASE NOTES:
 ---------------------------------
+2021.26.0.0 - updated 2021
 2020.25.1.0 - Added Export-Format Configuration, Output Folder option, named and published as Autodesk.VltInvSrv.ExportSampleJob, 
 				implemented formats are STEP, JT and Sheet Metal Flat Pattern DXF
-				
 2020.25.0.3 - Added Logging, named and published as Autodesk.STEP.ExportSampleJob
-
 2020.25.0.0 - Initial Version, named and published as Autodesk.STEP.ExportSampleJob
  
 ---------------------------------
@@ -59,4 +58,3 @@ Thank you for your interest in Autodesk Vault solutions and API samples.
 Sincerely,
 
 Markus Koechl, Autodesk
-
