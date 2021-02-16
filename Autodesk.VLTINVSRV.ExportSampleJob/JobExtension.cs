@@ -27,7 +27,7 @@ using Autodesk.Connectivity.JobProcessor.Extensibility;
 using ACW = Autodesk.Connectivity.WebServices;
 using Inventor;
 
-[assembly: ApiVersion("14.0")]
+[assembly: ApiVersion("15.0")]
 [assembly: ExtensionId("385b4efe-36be-485d-a533-1e84369d1bea")]
 
 
