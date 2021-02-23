@@ -386,6 +386,14 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     case "SMDXF":
                         try
                         {
+                            mTrace.IndentLevel += 1;
+
+                            if (mDoc.SubType != "{9C464203-9BAE-11D3-8BAD-0060B0CE6BB4}")
+                            {
+                                mTrace.WriteLine("Info: Job stopped SheetMetal DXF Translator because the processed file is not a SM component type");
+                                mTrace.IndentLevel -= 1;
+                                break;
+                            }
                             TranslatorAddIn mDXFTrans = mInvSrvAddIns.ItemById["{C24E3AC4-122E-11D5-8E91-0010B541CD80}"] as TranslatorAddIn;
                             mDXFTrans.Activate();
                             if (mDXFTrans == null)
@@ -572,16 +580,38 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                 {
                     mTrace.WriteLine(mExpFile.Name + ": Job tries synchronizing lifecycle state in Vault.");
                     Dictionary<string, long> mTargetStateNames = new Dictionary<string, long>();
+                    long mReleasedStateId = -1;
                     ACW.LfCycDef mTargetLfcDef = (mWsMgr.LifeCycleService.GetLifeCycleDefinitionsByIds(new long[] { mExpFile.FileLfCyc.LfCycDefId })).FirstOrDefault();
                     foreach (var item in mTargetLfcDef.StateArray)
                     {
+                        if (item.ReleasedState == true && mReleasedStateId == -1)
+                        {
+                            mReleasedStateId = item.Id;
+                        }
                         mTargetStateNames.Add(item.DispName, item.Id);
                     }
                     mTargetStateNames.TryGetValue(mFile.FileLfCyc.LfCycStateName, out long mTargetLfcStateId);
-                    mWsMgr.DocumentServiceExtensions.UpdateFileLifeCycleStates(new long[] { mExpFile.MasterId }, new long[] { mTargetLfcStateId }, "Lifecycle state synchronized by Job Processor");
+                    //handle the case that state names differ, especially for the ReleasedState
+                    if (mTargetLfcStateId == 0 )
+                    {
+                        if (mFile.FileLfCyc.Consume == true && mReleasedStateId != -1) // it is a "ReleasedState"
+                        {
+                            mTargetLfcStateId = mReleasedStateId;
+                        } 
+                    }
+                    if (mTargetLfcStateId != 0)
+                    {
+                        mWsMgr.DocumentServiceExtensions.UpdateFileLifeCycleStates(new long[] { mExpFile.MasterId }, new long[] { mTargetLfcStateId }, "Lifecycle state synchronized by Job Processor");
+                    }
+                    else
+                    {
+                        mTrace.WriteLine(mExpFile.Name + "WARNING: Job could not synchronize lifecycle state in Vault.");
+                    }
                 }
                 catch (Exception)
-                { }
+                {
+                    mTrace.WriteLine(mExpFile.Name + "Unhandled Exception: Job could not synchronize lifecycle state in Vault.");
+                }
 
                 //attach export file to source file leveraging design representation attachment type
                 try
@@ -596,7 +626,9 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     mWsMgr.DocumentService.AddDesignRepresentationFileAttachment(mFile.Id, mAssocParam);
                 }
                 catch (Exception)
-                { }
+                {
+                    mTrace.WriteLine(mExpFile.Name + "Unhandled Exception: Job could not attach to its source in Vault.");
+                }
 
                 mTrace.IndentLevel -= 1;
 

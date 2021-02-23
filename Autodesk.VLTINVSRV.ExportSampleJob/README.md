@@ -45,6 +45,7 @@ The job expects that all library definition files configured in the Inventor pro
 
 VERSION HISTORY / RELEASE NOTES:
 ---------------------------------
+2021.0.1.0 - avoid SMDXF export on non-sheet metal category parts.
 2021.26.0.0 - updated 2021
 2020.25.1.0 - Added Export-Format Configuration, Output Folder option, named and published as Autodesk.VltInvSrv.ExportSampleJob, 
 				implemented formats are STEP, JT and Sheet Metal Flat Pattern DXF
