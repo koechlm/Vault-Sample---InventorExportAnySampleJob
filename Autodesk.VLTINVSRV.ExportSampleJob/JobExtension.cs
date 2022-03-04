@@ -69,7 +69,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             }
             catch (Exception ex)
             {
-                context.Log(ex, "Autodesk.STEP.ExportSampleJob failed: " + ex.ToString() + " ");
+                context.Log(ex, "Autodesk.VltInvSrv.ExportSampleJob failed: " + ex.ToString() + " ");
 
                 mTrace.IndentLevel = 0;
                 mTrace.WriteLine("... ending Job with failures.");
@@ -486,7 +486,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                             }
 
                             //delete existing export file; note the resulting file name is "Drawing.idw.dwg
-                            string mExpFileName = mDocPath + ".dwg";
+                            string mExpFileName = mDocPath + ".dwg"; //Replace(mExt, ".dwg")
                             if (System.IO.File.Exists(mExpFileName))
                             {
                                 System.IO.FileInfo fileInfo = new FileInfo(mExpFileName);
@@ -532,7 +532,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                                 throw new Exception("DWG Translator Add-In failed to export DWG file (TransAddIn.SaveCopyAs()): " + ex.Message);
                             }
                             //collect all export files for later upload
-                            mUploadFiles.Add(mDocPath.Replace(mExt, ".dwg"));
+                            mUploadFiles.Add(mExpFileName);
                             System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.FirstOrDefault());
                             if (mExportFileInfo.Exists)
                             {
@@ -549,7 +549,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         catch (Exception ex)
                         {
                             mResetIpj(mSaveProject);
-                            throw new Exception("Failed to activate DWT Translator Add-in or prepairing the export options: " + ex.Message);
+                            throw new Exception("Failed to activate DWG Translator Add-in or prepairing the export options: " + ex.Message);
                         }
                         break;
 
