@@ -126,11 +126,12 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             if (mEntClsId != "FILE")
                 return;
 
-            // only run the job for ipt and iam file types,
-            List<string> mFileExtensions = new List<string> { ".ipt", ".iam" };
+            // only run the job for file types, supported by exports
+            List<string> mFileExtensions = new List<string> { ".ipt", ".iam", ".idw" };
             ACW.File mFile = mWsMgr.DocumentService.GetFileById(mEntId);
-            if (!mFileExtensions.Any(n => mFile.Name.Contains(n)))
+            if (!mFileExtensions.Any(n => mFile.Name.ToLower().Contains(n)))
             {
+                mTrace.WriteLine("Translator job exits: file extension is not supported.");
                 return;
             }
 
@@ -138,6 +139,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             List<string> mFileClassific = new List<string> { "ConfigurationFactory", "DesignSubstitute" }; //add "DesignDocumentation" for 3D Exporters only
             if (mFileClassific.Any(n => mFile.FileClass.ToString().Contains(n)))
             {
+                mTrace.WriteLine("Translator job exits: file classification 'ConfigurationFactory' or 'DesignSubstitute' are not supported.");
                 return;
             }
 
@@ -161,6 +163,20 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                 if (mExpFrmts.Contains("SMSAT")) mExpFrmts.Remove("SMSAT");
             }
 
+            //remove 3D formats, if source is IDW
+            if (mFile.Name.ToLower().Contains(".idw"))
+            {
+                if (mExpFrmts.Contains("STP")) mExpFrmts.Remove("STP");
+                if (mExpFrmts.Contains("JT")) mExpFrmts.Remove("JT");
+            }
+
+            //validate that at least one export format is in the list
+            if (mExpFrmts.Count < 1)
+            {
+                mTrace.WriteLine("Translator job exits: no matching source file type/export type found.");
+                return;
+            }
+
             mTrace.WriteLine("Job execution rules validated.");
 
             #endregion validate execution rules
@@ -172,7 +188,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
 
             //override InventorServer default project settings by your Vault specific ones
             Inventor.DesignProjectManager projectManager;
-            Inventor.DesignProject mSaveProject, mProject;
+            Inventor.DesignProject mSaveProject = null, mProject = null;
             String mIpjPath = "";
             String mWfPath = "";
             String mIpjLocalPath = "";
@@ -243,9 +259,18 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                 fileAcquisitionResult = mDownLoadResult.FileResults.FirstOrDefault();
                 mIpjLocalPath = fileAcquisitionResult.LocalPath.FullPath;
 
-                //activate this Vault's ipj temporarily    
+                //activate the given project file for this job only
                 projectManager = mInv.DesignProjectManager;
-                mSaveProject = projectManager.ActiveDesignProject;
+                //VaultInventorServer might fail with unhandled exeption on fresh installed machines, if no IPJ had been used before
+                try
+                {
+                    if (projectManager.ActiveDesignProject != null && projectManager.ActiveDesignProject.FullFileName != mIpjLocalPath)
+                    {
+                        mSaveProject = projectManager.ActiveDesignProject;
+                    }
+                }
+                catch (Exception)
+                {}
                 mProject = projectManager.DesignProjects.AddExisting(mIpjLocalPath);
                 mProject.Activate();
 
@@ -268,6 +293,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             mDownloadSettings2.AddFileToAcquire(mFileIteration, VDF.Vault.Settings.AcquireFilesSettings.AcquisitionOption.Download);
             mDownloadSettings2.OrganizeFilesRelativeToCommonVaultRoot = true;
             mDownloadSettings2.OptionsRelationshipGathering.FileRelationshipSettings.IncludeChildren = true;
+            mDownloadSettings2.OptionsRelationshipGathering.FileRelationshipSettings.RecurseChildren = true;
             mDownloadSettings2.OptionsRelationshipGathering.FileRelationshipSettings.IncludeLibraryContents = true;
             mDownloadSettings2.OptionsRelationshipGathering.FileRelationshipSettings.ReleaseBiased = true;
             VDF.Vault.Settings.AcquireFilesSettings.AcquireFileResolutionOptions mResOpt = new VDF.Vault.Settings.AcquireFilesSettings.AcquireFileResolutionOptions();
@@ -281,7 +307,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
 
             if (fileAcquisitionResult2 == null)
             {
-                mSaveProject.Activate();
+                mResetIpj(mSaveProject);
                 throw new Exception("Job stopped execution as the source file to translate did not download");
             }
             string mDocPath = fileAcquisitionResult2.LocalPath.FullPath;
@@ -308,7 +334,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                             if (mStepTrans == null)
                             {
                                 //switch temporarily used project file back to original one
-                                mSaveProject.Activate();
+                                mResetIpj(mSaveProject);
                                 throw new Exception("Job stopped execution, because indicated translator addin is not available.");
                             }
                             TranslationContext mTransContext = mInv.TransientObjects.CreateTranslationContext();
@@ -332,12 +358,22 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                                 mStepTrans.SaveCopyAs(mDoc, mTransContext, mTransOptions, mData);
                                 //collect all export files for later upload
                                 mUploadFiles.Add(mDocPath.Replace(mExt, ".stp"));
-                                mTrace.WriteLine("STEP Translator created file: " + mUploadFiles.LastOrDefault());
-                                mTrace.IndentLevel -= 1;
+                                System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.FirstOrDefault());
+                                if (mExportFileInfo.Exists)
+                                {
+                                    mTrace.WriteLine("STEP Translator created file: " + mUploadFiles.LastOrDefault());
+                                    mTrace.IndentLevel -= 1;
+                                }
+                                else
+                                {
+                                    mResetIpj(mSaveProject);
+                                    throw new Exception("Validating the export file before upload failed.");
+                                }
                             }
                         }
                         catch (Exception ex)
                         {
+                            mResetIpj(mSaveProject);
                             mTrace.WriteLine("STEP Export Failed: " + ex.Message);
                         }
                         break;
@@ -373,12 +409,22 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                                 mJtTrans.SaveCopyAs(mDoc, mTransContext, mTransOptions, mData);
                                 //collect all export files for later upload
                                 mUploadFiles.Add(mDocPath.Replace(mExt, ".jt"));
-                                mTrace.WriteLine("JT Translator created file: " + mUploadFiles.LastOrDefault());
-                                mTrace.IndentLevel -= 1;
+                                System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.FirstOrDefault());
+                                if (mExportFileInfo.Exists)
+                                {
+                                    mTrace.WriteLine("JT Translator created file: " + mUploadFiles.LastOrDefault());
+                                    mTrace.IndentLevel -= 1;
+                                }
+                                else
+                                {
+                                    mResetIpj(mSaveProject);
+                                    throw new Exception("Validating the export file before upload failed.");
+                                }
                             }
                         }
                         catch (Exception ex)
                         {
+                            mResetIpj(mSaveProject);
                             mTrace.WriteLine("JT Export Failed: " + ex.Message);
                         }
                         break;
@@ -386,6 +432,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     case "SMDXF":
                         try
                         {
+                            //activate DXF translator
                             TranslatorAddIn mDXFTrans = mInvSrvAddIns.ItemById["{C24E3AC4-122E-11D5-8E91-0010B541CD80}"] as TranslatorAddIn;
                             mDXFTrans.Activate();
                             if (mDXFTrans == null)
@@ -407,12 +454,102 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                             mDataIO.WriteDataToFile(mOut, mDocPath.Replace(mExt, ".dxf"));
                             //collect all export files for later upload
                             mUploadFiles.Add(mDocPath.Replace(mExt, ".dxf"));
-                            mTrace.WriteLine("SheetMetal DXF Translator created file: " + mUploadFiles.LastOrDefault());
-                            mTrace.IndentLevel -= 1;
+                            System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.FirstOrDefault());
+                            if (mExportFileInfo.Exists)
+                            {
+                                mTrace.WriteLine("SheetMetal DXF Translator created file: " + mUploadFiles.LastOrDefault());
+                                mTrace.IndentLevel -= 1;
+                            }
+                            else
+                            {
+                                mResetIpj(mSaveProject);
+                                throw new Exception("Validating the export file before upload failed.");
+                            }
                         }
                         catch (Exception ex)
                         {
+                            mResetIpj(mSaveProject);
                             mTrace.WriteLine("SMDXF Export Failed: " + ex.Message);
+                        }
+                        break;
+
+                    case "DWG":
+                        try
+                        {
+                            //activate DXF/DWG translator
+                            TranslatorAddIn mDwgTrans = mInvSrvAddIns.ItemById["{C24E3AC2-122E-11D5-8E91-0010B541CD80}"] as TranslatorAddIn;
+                            mDwgTrans.Activate();
+                            if (mDwgTrans == null)
+                            {
+                                mTrace.WriteLine("Dwg Translator not found.");
+                                break;
+                            }
+
+                            //delete existing export file; note the resulting file name is "Drawing.idw.dwg
+                            string mExpFileName = mDocPath + ".dwg";
+                            if (System.IO.File.Exists(mExpFileName))
+                            {
+                                System.IO.FileInfo fileInfo = new FileInfo(mExpFileName);
+                                fileInfo.IsReadOnly = false;
+                                fileInfo.Delete();
+                            }
+
+                            //create the TranslationContext
+                            Inventor.TranslationContext mTranslationContext = mInv.TransientObjects.CreateTranslationContext();
+                            mTranslationContext.Type = IOMechanismEnum.kFileBrowseIOMechanism;
+
+                            //create NameValueMap object
+                            NameValueMap mOptions = mInv.TransientObjects.CreateNameValueMap();
+
+                            //Create a DataMedium object
+                            DataMedium mDataMedium = mInv.TransientObjects.CreateDataMedium();
+
+                            //Check whether the translator has 'SaveCopyAs' options and add the export configuration *.ini file
+                            if (mDwgTrans.HasSaveCopyAsOptions[mDoc, mTranslationContext, mOptions] == true)
+                            {
+                                //validate that the ini file exist at the given path
+                                System.IO.FileInfo mIniFileInfo = new System.IO.FileInfo(mSettings.DwgIniFile);
+                                if (mIniFileInfo.Exists)
+                                {
+                                    mOptions.Value["Export_Acad_IniFile"] = mSettings.DwgIniFile;
+                                }
+                                else
+                                {
+                                    mResetIpj(mSaveProject);
+                                    throw new Exception("Job could not find the DWG export configuration file " + mSettings.DwgIniFile);
+                                }
+                            }
+
+                            //create the export file
+                            mDataMedium.FileName = mExpFileName;
+                            try
+                            {
+                                mDwgTrans.SaveCopyAs(mDoc, mTranslationContext, mOptions, mDataMedium);
+                            }
+                            catch (Exception ex)
+                            {
+                                mResetIpj(mSaveProject);
+                                throw new Exception("DWG Translator Add-In failed to export DWG file (TransAddIn.SaveCopyAs()): " + ex.Message);
+                            }
+                            //collect all export files for later upload
+                            mUploadFiles.Add(mDocPath.Replace(mExt, ".dwg"));
+                            System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.FirstOrDefault());
+                            if (mExportFileInfo.Exists)
+                            {
+                                mTrace.WriteLine("DWG Translator created file: " + mUploadFiles.LastOrDefault());
+                                mTrace.IndentLevel -= 1;
+                            }
+                            else
+                            {
+                                mResetIpj(mSaveProject);
+                                throw new Exception("Validating the export file before upload failed.");
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            mResetIpj(mSaveProject);
+                            throw new Exception("Failed to activate DWT Translator Add-in or prepairing the export options: " + ex.Message);
                         }
                         break;
 
@@ -424,7 +561,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             mTrace.WriteLine("Source file closed");
 
             //switch temporarily used project file back to original one
-            mSaveProject.Activate();
+            mResetIpj(mSaveProject);
 
             mTrace.WriteLine("Job exported file(s); continues uploading.");
             mTrace.IndentLevel -= 1;
@@ -580,8 +717,10 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     mTargetStateNames.TryGetValue(mFile.FileLfCyc.LfCycStateName, out long mTargetLfcStateId);
                     mWsMgr.DocumentServiceExtensions.UpdateFileLifeCycleStates(new long[] { mExpFile.MasterId }, new long[] { mTargetLfcStateId }, "Lifecycle state synchronized by Job Processor");
                 }
-                catch (Exception)
-                { }
+                catch (Exception ex)
+                {
+                    mTrace.WriteLine("Job failed aligning lifecycle states of source file " + mFile.Name + " and export file: " + mExpFile.Name + " . Exception details: " + ex);
+                }
 
                 //attach export file to source file leveraging design representation attachment type
                 try
@@ -595,8 +734,10 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     mAssocParam.Typ = ACW.AssociationType.Attachment;
                     mWsMgr.DocumentService.AddDesignRepresentationFileAttachment(mFile.Id, mAssocParam);
                 }
-                catch (Exception)
-                { }
+                catch (Exception ex)
+                {
+                    mTrace.WriteLine("Job failed attaching the exported file " + mExpFile.Name + " to the source file: " + mFile.Name + " . Exception details: " + ex);
+                }
 
                 mTrace.IndentLevel -= 1;
 
@@ -608,6 +749,14 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             mTrace.WriteLine("Job finished all steps.");
             mTrace.Flush();
             mTrace.Close();
+        }
+
+        private static void mResetIpj(DesignProject mSaveProject)
+        {
+            if (mSaveProject != null)
+            {
+                mSaveProject.Activate();
+            }
         }
         #endregion Job Execution
     }

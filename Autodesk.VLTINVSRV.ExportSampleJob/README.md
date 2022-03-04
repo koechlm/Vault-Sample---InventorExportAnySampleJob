@@ -24,11 +24,12 @@ The job is valid for any Vault configuration fulfilling these requirements:
 
 TO CONFIGURE:
 ---------------------------------
-1) Copy the folder Autodesk.VltInvSrv.ExportSampleJob to %ProgramData%\Autodesk\Vault 2020\Extensions\.
+1) Copy the folder Autodesk.VltInvSrv.ExportSampleJob to %ProgramData%\Autodesk\Vault 202x\Extensions\.
 2) Edit the settings.xml to configure the logfile directory; the default is "C:\Temp\".
 3) Edit the settings.xml to configure the export format(s) per Job; multiple formats are allowed e.g., to create a STEP for Sheet Metal folded model 
 	and a DXF for the Sheet Metal Flat Pattern add the values STP, SMDXF to <ExportFomats>STP,SMDXF</ExportFomats>. To enable dual export for Sheet Metal components
 	a category for these part files is expected; configure the name of the category using the element SmCadDispName e.g., <SmCatDispName>Sheet Metal Part</SmCatDispName>
+	Several copies of the setting.xml represent configurations for STEP and JT, STEP and Sheet Metal DXF and IDW -> DWG export tasks.
 4) Add the job to the Job Queue activating job transitions. To achieve this, integrate this job into a custom lifecycle transition by adding the Job-Type name
 "Autodesk.VltInvSrv.ExportSampleJob" to the transition's 'Custom Job Types' tab.
 
@@ -45,6 +46,8 @@ The job expects that all library definition files configured in the Inventor pro
 
 VERSION HISTORY / RELEASE NOTES:
 ---------------------------------
+2022.1.0.1 - added IDW -> DWG export capabilities; improved logging and error handling; fixed download issue for multilevel assembly files;
+		fixed IPJ activation issue on first run on fresh machines;
 2022.0.42.0 - updated 2022
 2021.26.0.0 - updated 2021
 2020.25.1.0 - Added Export-Format Configuration, Output Folder option, named and published as Autodesk.VltInvSrv.ExportSampleJob, 

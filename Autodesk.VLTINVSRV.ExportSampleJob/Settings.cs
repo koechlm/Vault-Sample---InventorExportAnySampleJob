@@ -34,6 +34,8 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
         [XmlElement("OutputPath")]
         public string OutPutPath;
 
+        [XmlElement("DwgIniFile")]
+        public string DwgIniFile;
 
         private Settings()
         {
