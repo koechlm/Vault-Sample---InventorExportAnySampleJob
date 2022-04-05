@@ -46,8 +46,8 @@ The job expects that all library definition files configured in the Inventor pro
 
 VERSION HISTORY / RELEASE NOTES:
 ---------------------------------
-2022.1.0.1 - added IDW -> DWG export capabilities; improved logging and error handling; fixed download issue for multilevel assembly files;
-		fixed IPJ activation issue on first run on fresh machines;
+2022.1.0.2 - added IDW -> DWG export capabilities; improved logging and error handling; fixed download issue for multilevel assembly files;
+		fixed IPJ activation issue on first run on fresh machines; fixed issue #7: Exported files don't attach to latest parent iteration
 2022.0.42.0 - updated 2022
 2021.26.0.0 - updated 2021
 2020.25.1.0 - Added Export-Format Configuration, Output Folder option, named and published as Autodesk.VltInvSrv.ExportSampleJob, 
