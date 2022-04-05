@@ -270,7 +270,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     }
                 }
                 catch (Exception)
-                {}
+                { }
                 mProject = projectManager.DesignProjects.AddExisting(mIpjLocalPath);
                 mProject.Activate();
 
@@ -609,7 +609,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         var folderEntity = new Autodesk.DataManagement.Client.Framework.Vault.Currency.Entities.Folder(connection, mFolder);
                         try
                         {
-                            addedFile = connection.FileManager.AddFile(folderEntity, "Created by Job Processor", null, null, ACW.FileClassification.DesignRepresentation, false, vdfPath);
+                            addedFile = connection.FileManager.AddFile(folderEntity, "Created by ExportSampleJob", null, null, ACW.FileClassification.DesignRepresentation, false, vdfPath);
                             mExpFile = addedFile;
                         }
                         catch (Exception ex)
@@ -632,7 +632,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         var results = connection.FileManager.AcquireFiles(aqSettings);
                         try
                         {
-                            mUploadedFile = connection.FileManager.CheckinFile(results.FileResults.First().File, "Created by Job Processor", false, null, null, false, null, ACW.FileClassification.DesignRepresentation, false, vdfPath);
+                            mUploadedFile = connection.FileManager.CheckinFile(results.FileResults.First().File, "Created by ExportSampleJob", false, null, null, false, null, ACW.FileClassification.DesignRepresentation, false, vdfPath);
                             mExpFile = mUploadedFile;
                         }
                         catch (Exception ex)
@@ -652,7 +652,8 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                 try
                 {
                     mTrace.WriteLine("Job tries synchronizing " + mExpFile.Name + "'s revision in Vault.");
-                    mWsMgr.DocumentServiceExtensions.UpdateFileRevisionNumbers(new long[] { mExpFile.Id }, new string[] { mFile.FileRev.Label }, "Rev Index synchronized by Job Processor");
+                    mWsMgr.DocumentServiceExtensions.UpdateFileRevisionNumbers(new long[] { mExpFile.Id }, new string[] { mFile.FileRev.Label }, "Rev Index synchronized by ExportSampleJob");
+                    mExpFile = (mWsMgr.DocumentService.GetLatestFileByMasterId(mExpFile.MasterId));
                 }
                 catch (Exception)
                 {
@@ -695,7 +696,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
 
                     //update export file using the property dictionary; note this the IExplorerUtil method bumps file iteration and requires no check out
                     mExplUtil.UpdateFileProperties(mExpFile, mPropDictonary);
-
+                    mExpFile = (mWsMgr.DocumentService.GetLatestFileByMasterId(mExpFile.MasterId));
                 }
                 catch (Exception ex)
                 {
@@ -715,7 +716,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         mTargetStateNames.Add(item.DispName, item.Id);
                     }
                     mTargetStateNames.TryGetValue(mFile.FileLfCyc.LfCycStateName, out long mTargetLfcStateId);
-                    mWsMgr.DocumentServiceExtensions.UpdateFileLifeCycleStates(new long[] { mExpFile.MasterId }, new long[] { mTargetLfcStateId }, "Lifecycle state synchronized by Job Processor");
+                    mWsMgr.DocumentServiceExtensions.UpdateFileLifeCycleStates(new long[] { mExpFile.MasterId }, new long[] { mTargetLfcStateId }, "Lifecycle state synchronized ExportSampleJob");
                 }
                 catch (Exception ex)
                 {
@@ -727,11 +728,13 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                 {
                     mTrace.WriteLine(mExpFile.Name + ": Job tries to attach to its source in Vault.");
                     ACW.FileAssocParam mAssocParam = new ACW.FileAssocParam();
-                    mAssocParam.CldFileId = mExpFile.Id;
+                    mAssocParam.CldFileId = (mWsMgr.DocumentService.GetLatestFileByMasterId(mExpFile.MasterId)).Id;
                     mAssocParam.ExpectedVaultPath = mWsMgr.DocumentService.FindFoldersByIds(new long[] { mFile.FolderId }).First().FullName;
                     mAssocParam.RefId = null;
                     mAssocParam.Source = null;
                     mAssocParam.Typ = ACW.AssociationType.Attachment;
+                    //refresh the parent file to the latest version id; default jobs like sync props or update rev.table might have updated the parent already
+                    mFile = (mWsMgr.DocumentService.GetLatestFileByMasterId(mFile.MasterId));
                     mWsMgr.DocumentService.AddDesignRepresentationFileAttachment(mFile.Id, mAssocParam);
                 }
                 catch (Exception ex)
