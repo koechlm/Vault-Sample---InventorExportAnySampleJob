@@ -26,7 +26,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
         public string LogFileLocation;
 
         [XmlElement("ExportFomats")]
-        public string ExportFomats;
+        public string ExportFormats;
 
         [XmlElement("SmCatDispName")]
         public string SmCatDispName;
@@ -34,8 +34,8 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
         [XmlElement("OutputPath")]
         public string OutPutPath;
 
-        [XmlElement("DwgIniFile")]
-        public string DwgIniFile;
+        [XmlElement("DwgIniFile2D")]
+        public string DwgIniFile2D;
 
         private Settings()
         {
