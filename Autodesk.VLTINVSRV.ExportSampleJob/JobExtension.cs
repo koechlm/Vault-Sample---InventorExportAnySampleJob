@@ -879,26 +879,6 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
 
             }
 
-            //evaluate PDF creation as latest step
-            //more links: https://forums.autodesk.com/t5/vault-customization/in-what-order-job-types-are-processed-default-job-types-and-user/td-p/9492378
-            //more links: https://support.coolorange.com/support/solutions/articles/22000201245-how-to-manually-queue-autodesk-vault-jobs
-            //if (mFile.Name.EndsWith(".idw"))
-            //{
-            //    ACW.JobParam mJobParamFileVerId = new ACW.JobParam();
-            //    ACW.JobParam mJobParamUptViewOpt = new ACW.JobParam();
-            //    List<ACW.JobParam> mJobParamsList = new List<ACW.JobParam>();
-
-            //    mJobParamFileVerId.Name = "FileVersionId";
-            //    mJobParamFileVerId.Val = (mWsMgr.DocumentService.GetLatestFileByMasterId(mFile.MasterId)).Id.ToString();
-            //    mJobParamsList.Add(mJobParamFileVerId);
-
-            //    mJobParamUptViewOpt.Name = "UpdateViewOption";
-            //    mJobParamUptViewOpt.Val = "False";
-            //    mJobParamsList.Add(mJobParamUptViewOpt);
-
-            //    mWsMgr.JobService.AddJob("Autodesk.Vault.PDF.Create.idw", "Create PDF: " + mFile.Name + " (submitted by ExportSampleJob)", mJobParamsList.ToArray(), 1);
-            //}
-
             #endregion Vault File Management
 
             mTrace.IndentLevel = 1;
