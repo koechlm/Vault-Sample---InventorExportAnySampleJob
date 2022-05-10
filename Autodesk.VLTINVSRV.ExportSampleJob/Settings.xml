@@ -5,17 +5,17 @@
   <LogFileLocation>C:\Temp\</LogFileLocation>
   
   <!-- Export File Format(s)-->
-  <!--  Supported Values/File Formats are: STP, JT,SMDXF,DWG -->
-  <!--  Multiple Outputs per jobs are supported, list all required formats comma separated, e.g., STP, JT, DXF -->
-  <!--  To Export Sheet Metal Flatpattern use either SMSAT or SMDXF - NOTE: distinct category for sheet metal part required, if job handles parts and SM-parts-->
-  <ExportFomats>DWG</ExportFomats>
+  <!--  Supported Values/File Formats are: STP, JT, SMDXF, 3DDWG, 2DDWG -->
+  <!--  Multiple Outputs per jobs are supported, list all required formats comma separated, e.g., STP, JT, SMDXF -->
+  <!--  To Export Sheet Metal Flatpattern SMDXF - NOTE: distinct category for sheet metal part required, if job handles parts and SM-parts-->
+  <ExportFomats>2DDWG</ExportFomats>
   
   <!--Sheet Metal Category Name-->
   <SmCatDispName>Sheet Metal Part</SmCatDispName>
 
-  <!--DWG Export ini path and file name-->
-  <DwgIniFile>C:\ProgramData\Autodesk\Vault 2022\Extensions\Autodesk.VltInvSrv.ExportSampleJob\IDW-2-DWG.ini</DwgIniFile>
-  
+  <!--2D-DWG Export ini path and file name-->
+  <DwgIniFile2D>C:\ProgramData\Autodesk\Vault 2022\Extensions\Autodesk.VltInvSrv.ExportSampleJob\IDW-2-DWG.ini</DwgIniFile2D>
+
   <!-- Output Path -->
   <!--  The job can copy the resulting file(s) to the given output path after check-in-->
   <OutputPath>C:\Temp\</OutputPath>

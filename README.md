@@ -46,6 +46,9 @@ The job expects that all library definition files configured in the Inventor pro
 
 VERSION HISTORY / RELEASE NOTES:
 ---------------------------------
+2022.2.0.1 - support 2D and 3D export file formats while respecting matching source file types (IPT, IAM, IDW/DWG)
+	support 2D DWG (IDW/DWG) and 3D DWG (IPT, IAM) export targets
+	updated settings and settings.xml sample configurations
 2022.1.0.2 - added IDW -> DWG export capabilities; improved logging and error handling; fixed download issue for multilevel assembly files;
 		fixed IPJ activation issue on first run on fresh machines; fixed issue #7: Exported files don't attach to latest parent iteration
 2022.0.42.0 - updated 2022
