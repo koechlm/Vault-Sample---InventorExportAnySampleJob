@@ -8,6 +8,7 @@ This sample walks you through the basic concept handling Inventor part or assemb
 To open 3D part files as well as full assemblies maintaining all file references, the job leverages Vault project file settings initializing the job execution.
 File download and running the Inventor translator add-in for CAD-Export formats follow as major execution step.
 The final steps adds export files to Vault, copying user properties, trying to synchronize revision index and lifecycle state, and finally attaches the result to their source respectively.
+![image](https://user-images.githubusercontent.com/19150039/173578494-76d3c576-01f2-4457-999b-754fb92e30af.png)
 
 REQUIREMENTS:
 ---------------------------------
