@@ -46,6 +46,7 @@ The job expects that all library definition files configured in the Inventor pro
 
 VERSION HISTORY / RELEASE NOTES:
 ---------------------------------
+2022.3.0.x - support Image export for IPT, IAM, IDW/DWG; image formats PNG, BMP, GIF, JPG and TIFF are configurable
 2022.2.0.1 - support 2D and 3D export file formats while respecting matching source file types (IPT, IAM, IDW/DWG)
 	support 2D DWG (IDW/DWG) and 3D DWG (IPT, IAM) export targets
 	updated settings and settings.xml sample configurations

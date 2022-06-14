@@ -127,7 +127,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                 return;
 
             // only run the job for source file types, supported by exports (as of today)
-            List<string> mFileExtensions = new List<string> { ".ipt", ".iam", ".idw" }; //add ipn if Image, 2D PDF or DWF are implemented
+            List<string> mFileExtensions = new List<string> { ".ipt", ".iam", ".idw"}; //ipn is not supported by InventorServer
             ACW.File mFile = mWsMgr.DocumentService.GetFileById(mEntId);
             if (!mFileExtensions.Any(n => mFile.Name.ToLower().EndsWith(n)))
             {
@@ -146,9 +146,9 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             // you may add addtional execution filters, e.g., category name == "Sheet Metal Part"
 
             //only run the job for implemented/available combinations of source file and export file formats
-            List<string> mIptExpFrmts = new List<string> { "STP", "JT", "SMDXF", "3DDWG" };
-            List<string> mIamExpFrmts = new List<string> { "STP", "JT", "3DDWG" };
-            List<string> mIdwExpFrmts = new List<string> { "2DDWG" };
+            List<string> mIptExpFrmts = new List<string> { "STP", "JT", "SMDXF", "3DDWG", "IMAGE"};
+            List<string> mIamExpFrmts = new List<string> { "STP", "JT", "3DDWG", "IMAGE"};
+            List<string> mIdwExpFrmts = new List<string> { "2DDWG", "IMAGE" };
 
             if (settings.ExportFormats == null)
                 throw new Exception("Settings expect to list at least one export format!");
@@ -203,6 +203,16 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                 if (mExpFrmts.Contains("SMDXF")) mExpFrmts.Remove("SMDXF");
                 if (mExpFrmts.Contains("3DDWG")) mExpFrmts.Remove("3DDWG");
             }
+
+            //if (mFile.Name.ToLower().EndsWith(".ipn")) //note - requires Inventor application instead of InventorServer
+            //{
+            //    string[] mTmpList = new string[mExpFrmts.Count];
+            //    mTmpList = mExpFrmts.ToArray();
+            //    foreach (string mFrmt in mTmpList.ToList())
+            //    {
+            //        if (mFrmt != "IMAGE") mExpFrmts.Remove(mFrmt);
+            //    }
+            //}
 
             //validate that at least one export format is in the list
             if (mExpFrmts.Count < 1)
@@ -381,17 +391,18 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                             mTransOptions.Value["Description"] = "Sample-Job Step Translator using VaultInventorServer";
                             mTransContext.Type = IOMechanismEnum.kFileBrowseIOMechanism;
                             //delete local file if exists, as the export wouldn't overwrite
-                            if (System.IO.File.Exists(mDocPath.Replace(mExt, ".stp")))
+                            string mExpFileName = mDocPath + ".stp";
+                            if (System.IO.File.Exists(mExpFileName))
                             {
-                                System.IO.File.SetAttributes(mDocPath.Replace(mExt, ".stp"), System.IO.FileAttributes.Normal);
-                                System.IO.File.Delete(mDocPath.Replace(mExt, ".stp"));
+                                System.IO.File.SetAttributes(mExpFileName, System.IO.FileAttributes.Normal);
+                                System.IO.File.Delete(mExpFileName);
                             };
                             DataMedium mData = mInv.TransientObjects.CreateDataMedium();
-                            mData.FileName = mDocPath.Replace(mExt, ".stp");
+                            mData.FileName = mExpFileName;
                             mStepTrans.SaveCopyAs(mDoc, mTransContext, mTransOptions, mData);
                             //collect all export files for later upload
-                            mUploadFiles.Add(mDocPath.Replace(mExt, ".stp"));
-                            System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.FirstOrDefault());
+                            mUploadFiles.Add(mExpFileName);
+                            System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.LastOrDefault());
                             if (mExportFileInfo.Exists)
                             {
                                 mTrace.WriteLine("STEP Translator created file: " + mUploadFiles.LastOrDefault());
@@ -433,17 +444,18 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                             mTransOptions.Value["Version"] = 102; //default
                             mTransContext.Type = IOMechanismEnum.kFileBrowseIOMechanism;
                             //delete local file if exists, as the export wouldn't overwrite
-                            if (System.IO.File.Exists(mDocPath.Replace(mExt, ".jt")))
+                            string mExpFileName = mDocPath + ".jt";
+                            if (System.IO.File.Exists(mExpFileName))
                             {
-                                System.IO.File.SetAttributes(mDocPath.Replace(mExt, ".jt"), System.IO.FileAttributes.Normal);
-                                System.IO.File.Delete(mDocPath.Replace(mExt, ".jt"));
+                                System.IO.File.SetAttributes(mExpFileName, System.IO.FileAttributes.Normal);
+                                System.IO.File.Delete(mExpFileName);
                             };
                             DataMedium mData = mInv.TransientObjects.CreateDataMedium();
-                            mData.FileName = mDocPath.Replace(mExt, ".jt");
+                            mData.FileName = mExpFileName;
                             mJtTrans.SaveCopyAs(mDoc, mTransContext, mTransOptions, mData);
                             //collect all export files for later upload
-                            mUploadFiles.Add(mDocPath.Replace(mExt, ".jt"));
-                            System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.FirstOrDefault());
+                            mUploadFiles.Add(mExpFileName);
+                            System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.LastOrDefault());
                             if (mExportFileInfo.Exists)
                             {
                                 mTrace.WriteLine("JT Translator created file: " + mUploadFiles.LastOrDefault());
@@ -476,9 +488,10 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                             break;
                         }
 
-                        if (System.IO.File.Exists(mDocPath.Replace(mExt, ".dxf")))
+                        string mExpFileName = mDocPath + ".dxf";
+                        if (System.IO.File.Exists(mExpFileName))
                         {
-                            System.IO.FileInfo fileInfo = new FileInfo(mDocPath.Replace(mExt, ".dxf"));
+                            System.IO.FileInfo fileInfo = new FileInfo(mExpFileName);
                             fileInfo.IsReadOnly = false;
                             fileInfo.Delete();
                         }
@@ -486,10 +499,10 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         PartDocument mPartDoc = (PartDocument)mDoc;
                         DataIO mDataIO = mPartDoc.ComponentDefinition.DataIO;
                         String mOut = "FLAT PATTERN DXF?AcadVersion=R12&OuterProfileLayer=Outer";
-                        mDataIO.WriteDataToFile(mOut, mDocPath.Replace(mExt, ".dxf"));
+                        mDataIO.WriteDataToFile(mOut, mExpFileName);
                         //collect all export files for later upload
-                        mUploadFiles.Add(mDocPath.Replace(mExt, ".dxf"));
-                        System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.FirstOrDefault());
+                        mUploadFiles.Add(mExpFileName);
+                        System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.LastOrDefault());
                         if (mExportFileInfo.Exists)
                         {
                             mTrace.WriteLine("SheetMetal DXF Translator created file: " + mUploadFiles.LastOrDefault());
@@ -521,14 +534,17 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                             break;
                         }
 
-                        //delete existing export file; note the resulting file name is "Drawing.idw.dwg
-                        string mExpFileName = mDocPath + ".dwg"; //Replace(mExt, ".dwg")
+                        //delete existing export file; note the resulting file name is e.g. "Drawing.idw.dwg
+                        string mExpFileName = mDocPath + ".dwg";
                         if (System.IO.File.Exists(mExpFileName))
                         {
                             System.IO.FileInfo fileInfo = new FileInfo(mExpFileName);
                             fileInfo.IsReadOnly = false;
                             fileInfo.Delete();
                         }
+
+                        mTrace.IndentLevel += 1;
+                        mTrace.WriteLine("DWG Export starts...");
 
                         //create the TranslationContext
                         Inventor.TranslationContext mTranslationContext = mInv.TransientObjects.CreateTranslationContext();
@@ -580,7 +596,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         }
                         //collect all export files for later upload
                         mUploadFiles.Add(mExpFileName);
-                        System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.FirstOrDefault());
+                        System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.LastOrDefault());
                         if (mExportFileInfo.Exists)
                         {
                             mTrace.WriteLine("DWG Translator created file: " + mUploadFiles.LastOrDefault());
@@ -597,6 +613,79 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     {
                         mResetIpj(mSaveProject);
                         throw new Exception("Failed to activate DWG Translator Add-in or prepairing the export options: " + ex.Message);
+                    }
+                }
+
+                if (item == "IMAGE")
+                {
+                    //delete existing export file; note the resulting file name is e.g. "Drawing.idw.dwg
+                    string mExpFileName = mDocPath + "." + mSettings.ImgFileType.ToLower();
+                    if (System.IO.File.Exists(mExpFileName))
+                    {
+                        System.IO.FileInfo fileInfo = new FileInfo(mExpFileName);
+                        fileInfo.IsReadOnly = false;
+                        fileInfo.Delete();
+                    }
+
+                    mTrace.IndentLevel += 1;
+                    mTrace.WriteLine("Image Export starts...");
+
+                    //create camera object; note InventorServer does not provide document views (=saved camera)
+                    Camera mCamera = mInv.TransientObjects.CreateCamera();
+                    PartDocument mPartDoc = null;
+                    AssemblyDocument mAssyDoc = null;
+                    DrawingDocument mDrwDoc = null;
+                    //PresentationDocument mIpnDoc = null; //note - IPN require Inventor application instead of InventorServer
+
+                    //assign the scene object according the doc type: ComponentDefinition for IPT/IAM, Sheet for IDW/DWG, PresentationScene for IPN
+                    if (mDoc.DocumentType == DocumentTypeEnum.kPartDocumentObject)
+                    {
+                        mPartDoc = (PartDocument)mDoc;
+                        mCamera.SceneObject = mPartDoc.ComponentDefinition;
+                        //orient the camera
+                        mCamera.ViewOrientationType = ViewOrientationTypeEnum.kIsoTopRightViewOrientation;
+                    }
+                    if (mDoc.DocumentType == DocumentTypeEnum.kAssemblyDocumentObject)
+                    {
+                        mAssyDoc = (AssemblyDocument)mDoc;
+                        mCamera.SceneObject = mAssyDoc.ComponentDefinition;
+                        //orient the camera
+                        mCamera.ViewOrientationType = ViewOrientationTypeEnum.kIsoTopRightViewOrientation;
+                    }
+                    if (mDoc.DocumentType == DocumentTypeEnum.kDrawingDocumentObject)
+                    {
+                        mDrwDoc = (DrawingDocument)mDoc;
+                        mCamera.SceneObject = mDrwDoc.ActiveSheet;
+                    }
+                    //if (mDoc.DocumentType == DocumentTypeEnum.kPresentationDocumentObject) //note - requires Inventor application instead of InventorServer
+                    //{
+                    //    mIpnDoc = (PresentationDocument)mDoc;
+                    //    mCamera.SceneObject = mIpnDoc.ActiveScene;
+                    //    mCamera.ViewOrientationType = ViewOrientationTypeEnum.kCurrentViewOrientation;
+                    //}
+
+                    //zoom all 
+                    mCamera.Fit();
+                    mCamera.ApplyWithoutTransition();
+
+                    //set the background color; set different top and bottom color to get a gradient
+                    Color mTopClr = mInv.TransientObjects.CreateColor(255, 255, 255, 1); //white
+                    Color mBtmClr = mInv.TransientObjects.CreateColor(211, 211, 211, 1); //light grey
+
+                    mCamera.SaveAsBitmap(mExpFileName, 1280, 768, mTopClr, mBtmClr);
+
+                    //collect all export files for later upload
+                    mUploadFiles.Add(mExpFileName);
+                    System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.LastOrDefault());
+                    if (mExportFileInfo.Exists)
+                    {
+                        mTrace.WriteLine("Inventor Image Export created the file: " + mUploadFiles.LastOrDefault());
+                        mTrace.IndentLevel -= 1;
+                    }
+                    else
+                    {
+                        mResetIpj(mSaveProject);
+                        throw new Exception("Validating the export file " + mExpFileName + " before upload failed.");
                     }
                 }
             }
@@ -789,26 +878,6 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                 mTrace.IndentLevel -= 1;
 
             }
-
-            //evaluate PDF creation as latest step
-            //more links: https://forums.autodesk.com/t5/vault-customization/in-what-order-job-types-are-processed-default-job-types-and-user/td-p/9492378
-            //more links: https://support.coolorange.com/support/solutions/articles/22000201245-how-to-manually-queue-autodesk-vault-jobs
-            //if (mFile.Name.EndsWith(".idw"))
-            //{
-            //    ACW.JobParam mJobParamFileVerId = new ACW.JobParam();
-            //    ACW.JobParam mJobParamUptViewOpt = new ACW.JobParam();
-            //    List<ACW.JobParam> mJobParamsList = new List<ACW.JobParam>();
-
-            //    mJobParamFileVerId.Name = "FileVersionId";
-            //    mJobParamFileVerId.Val = (mWsMgr.DocumentService.GetLatestFileByMasterId(mFile.MasterId)).Id.ToString();
-            //    mJobParamsList.Add(mJobParamFileVerId);
-
-            //    mJobParamUptViewOpt.Name = "UpdateViewOption";
-            //    mJobParamUptViewOpt.Val = "False";
-            //    mJobParamsList.Add(mJobParamUptViewOpt);
-
-            //    mWsMgr.JobService.AddJob("Autodesk.Vault.PDF.Create.idw", "Create PDF: " + mFile.Name + " (submitted by ExportSampleJob)", mJobParamsList.ToArray(), 1);
-            //}
 
             #endregion Vault File Management
 
