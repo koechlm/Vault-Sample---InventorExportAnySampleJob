@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using Autodesk.Connectivity.Extensibility.Framework;
 using ACET = Autodesk.Connectivity.Explorer.ExtensibilityTools;
 using VDF = Autodesk.DataManagement.Client.Framework;
@@ -43,10 +44,8 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
         private static string mLogFile = JOB_TYPE + ".log";
         private TextWriterTraceListener mTrace = new TextWriterTraceListener(System.IO.Path.Combine(
             mLogDir, mLogFile), "mJobTrace");
-        private Inventor.Application mInvApp;
-        private bool mInvAppExisted = false;
-        private Navisworks.Api.Automation.NavisworksApplication Navisworks;
-        private bool mNavAppExisted = false;
+        private Navisworks.Api.Automation.NavisworksApplication NavisworksAutomation;
+        private bool mNavAutomExisted = false;
 
         #region IJobHandler Implementation
         public bool CanProcess(string jobType)
@@ -214,7 +213,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             //validate Navisworks instance for NWD format
             if (mExpFrmts.Contains("NWD"))
             {
-                if (mGetNavisworksApp() != true)
+                if (mGetNavisworksAutom() != true)
                 {
                     //the job might continue successful for other formats than NWD
                     if (mExpFrmts.Count == 1 && mExpFrmts.FirstOrDefault() == "NWD")
@@ -723,10 +722,10 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         //disable navisworks progress bar whilst we do this procedure
                         //Navisworks.DisableProgress();
                         //open the inventor file with navisworks; opening other file formats creates a new navisworks file appending the import file
-                        Navisworks.OpenFile(mDoc.FullFileName);
+                        NavisworksAutomation.OpenFile(mDoc.FullFileName);
 
                         //save the new navisworks
-                        Navisworks.SaveFile(mExpFileName);
+                        NavisworksAutomation.SaveFile(mExpFileName);
                         //Navisworks.EnableProgress();
 
                         //collect all export files for later upload
@@ -750,6 +749,12 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         {
                             //align the file name according our convention
                             string mNwcUpload = mDocPath + ".nwc";
+                            if (System.IO.File.Exists(mNwcUpload))
+                            {
+                                System.IO.FileInfo fileInfo = new FileInfo(mNwcUpload);
+                                fileInfo.IsReadOnly = false;
+                                fileInfo.Delete();
+                            }
                             System.IO.File.Move(mNWC, mNwcUpload);
                             mNwcInfo = new System.IO.FileInfo(mNwcUpload);
                             if (mNwcInfo.Exists)
@@ -985,53 +990,38 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             }
         }
 
-        private bool mGetNavisworksApp()
+        private bool mGetNavisworksAutom()
         {
-            while (Navisworks == null)
+            try
             {
-                try
-                {
-                    Navisworks = System.Runtime.InteropServices.Marshal.GetActiveObject("Roamer.Application") as Navisworks.Api.Automation.NavisworksApplication;
-                    mNavAppExisted = true;
-                }
-                catch (Exception)
+                NavisworksAutomation = Autodesk.Navisworks.Api.Automation.NavisworksApplication.TryGetRunningInstance();
+                if (NavisworksAutomation == null)
                 {
                     //create NavisworksApplication automation object
-                    Navisworks = new Autodesk.Navisworks.Api.Automation.NavisworksApplication();
+                    NavisworksAutomation = new Autodesk.Navisworks.Api.Automation.NavisworksApplication();
+                }
+                else
+                {
+                    mNavAutomExisted = true;
                 }
             }
+            catch (Exception)
+            {}
+
             return true;
         }
 
         private void mNavisworksDispose()
         {
             //don't terminate Navisworks if it has been running before
-            if (mNavAppExisted != true)
+            if (mNavAutomExisted != true)
             {
-                if (Navisworks != null)
+                if (NavisworksAutomation != null)
                 {
-                    Navisworks.Dispose();
-                    Navisworks = null;
+                    NavisworksAutomation.Dispose();
+                    NavisworksAutomation = null;
                 }
             }
-        }
-
-        private bool mGetInvApp()
-        {
-            while (mInvApp == null)
-            {
-                try
-                {
-                    mInvApp = System.Runtime.InteropServices.Marshal.GetActiveObject("Inventor.Application") as Inventor.Application;
-                    mInvAppExisted = true;
-                }
-                catch (Exception)
-                {
-                    Type inventorAppType = System.Type.GetTypeFromProgID("Inventor.Application");
-                    mInvApp = System.Activator.CreateInstance(inventorAppType) as Inventor.Application;
-                }
-            }
-            return true;
         }
 
         #endregion Job Execution

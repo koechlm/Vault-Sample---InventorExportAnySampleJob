@@ -46,7 +46,7 @@ The job expects that all library definition files configured in the Inventor pro
 
 VERSION HISTORY / RELEASE NOTES:
 ---------------------------------
-2023.1.0.0 - implemented export to Navisworks
+2023.1.0.0 - implemented export to Navisworks NWD(+NWC)
 2023.0.0.0 - updated for 2023
 2022.3.0.x - support Image export for IPT, IAM, IDW/DWG; image formats PNG, BMP, GIF, JPG and TIFF are configurable
 2022.2.0.1 - support 2D and 3D export file formats while respecting matching source file types (IPT, IAM, IDW/DWG)
