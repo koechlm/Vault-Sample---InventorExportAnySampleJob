@@ -12,7 +12,8 @@ The final steps adds export files to Vault, copying user properties, trying to s
 
 REQUIREMENTS:
 ---------------------------------
-Vault Workgroup, Vault Professional 2020 or newer. This job leverages the Vault Inventor Server component and does not require Inventor installation or Inventor license.
+Vault Workgroup, Vault Professional 2022 or newer. This job leverages the Vault Inventor Server component and does not require Inventor installation or Inventor license.
+However, the new option to create Navisworks files, requires Navisworks Manage installed on the Job Processor machine.
 The job is valid for any Vault configuration fulfilling these requirements:
 - Enforce Workingfolder = Enabled
 - Enforce Inventor Project File = Enabled
