@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using Autodesk.Connectivity.Extensibility.Framework;
 using ACET = Autodesk.Connectivity.Explorer.ExtensibilityTools;
 using VDF = Autodesk.DataManagement.Client.Framework;
@@ -26,6 +27,8 @@ using Autodesk.DataManagement.Client.Framework.Currency;
 using Autodesk.Connectivity.JobProcessor.Extensibility;
 using ACW = Autodesk.Connectivity.WebServices;
 using Inventor;
+//using Autodesk.Navisworks.Api.Automation;
+using Autodesk.Navisworks.Api.Resolver;
 
 [assembly: ApiVersion("16.0")]
 [assembly: ExtensionId("385b4efe-36be-485d-a533-1e84369d1bea")]
@@ -41,6 +44,8 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
         private static string mLogFile = JOB_TYPE + ".log";
         private TextWriterTraceListener mTrace = new TextWriterTraceListener(System.IO.Path.Combine(
             mLogDir, mLogFile), "mJobTrace");
+        private Navisworks.Api.Automation.NavisworksApplication NavisworksAutomation;
+        private bool mNavAutomExisted = false;
 
         #region IJobHandler Implementation
         public bool CanProcess(string jobType)
@@ -127,7 +132,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                 return;
 
             // only run the job for source file types, supported by exports (as of today)
-            List<string> mFileExtensions = new List<string> { ".ipt", ".iam", ".idw"}; //ipn is not supported by InventorServer
+            List<string> mFileExtensions = new List<string> { ".ipt", ".iam", ".idw" }; //ipn is not supported by InventorServer
             ACW.File mFile = mWsMgr.DocumentService.GetFileById(mEntId);
             if (!mFileExtensions.Any(n => mFile.Name.ToLower().EndsWith(n)))
             {
@@ -146,8 +151,8 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             // you may add addtional execution filters, e.g., category name == "Sheet Metal Part"
 
             //only run the job for implemented/available combinations of source file and export file formats
-            List<string> mIptExpFrmts = new List<string> { "STP", "JT", "SMDXF", "3DDWG", "IMAGE"};
-            List<string> mIamExpFrmts = new List<string> { "STP", "JT", "3DDWG", "IMAGE"};
+            List<string> mIptExpFrmts = new List<string> { "STP", "JT", "SMDXF", "3DDWG", "IMAGE", "NWD" };
+            List<string> mIamExpFrmts = new List<string> { "STP", "JT", "3DDWG", "IMAGE", "NWD" };
             List<string> mIdwExpFrmts = new List<string> { "2DDWG", "IMAGE" };
 
             if (settings.ExportFormats == null)
@@ -202,17 +207,26 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                 if (mExpFrmts.Contains("JT")) mExpFrmts.Remove("JT");
                 if (mExpFrmts.Contains("SMDXF")) mExpFrmts.Remove("SMDXF");
                 if (mExpFrmts.Contains("3DDWG")) mExpFrmts.Remove("3DDWG");
+                if (mExpFrmts.Contains("NWD")) mExpFrmts.Remove("NWD");
             }
 
-            //if (mFile.Name.ToLower().EndsWith(".ipn")) //note - requires Inventor application instead of InventorServer
-            //{
-            //    string[] mTmpList = new string[mExpFrmts.Count];
-            //    mTmpList = mExpFrmts.ToArray();
-            //    foreach (string mFrmt in mTmpList.ToList())
-            //    {
-            //        if (mFrmt != "IMAGE") mExpFrmts.Remove(mFrmt);
-            //    }
-            //}
+            //validate Navisworks instance for NWD format
+            if (mExpFrmts.Contains("NWD"))
+            {
+                if (mGetNavisworksAutom() != true)
+                {
+                    //the job might continue successful for other formats than NWD
+                    if (mExpFrmts.Count == 1 && mExpFrmts.FirstOrDefault() == "NWD")
+                    {
+                        mTrace.WriteLine("Translator job required Navisworks but failed to establish an application instance of Navisworks Manage; exit job with failure.");
+                        throw new Exception("Translator job's single task creating a Navisworks file failed: could not find or start Navisworks application.");
+                    }
+                    else
+                    {
+                        mTrace.WriteLine("Translator job required Navisworks, but failed to get an instance of the application; job continues to export other formats.");
+                    }
+                }
+            }
 
             //validate that at least one export format is in the list
             if (mExpFrmts.Count < 1)
@@ -411,7 +425,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                             else
                             {
                                 mResetIpj(mSaveProject);
-                                throw new Exception("Validating the export file before upload failed.");
+                                throw new Exception("Validating the export file " + mExpFileName + " before upload failed.");
                             }
                         }
                     }
@@ -464,7 +478,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                             else
                             {
                                 mResetIpj(mSaveProject);
-                                throw new Exception("Validating the export file before upload failed.");
+                                throw new Exception("Validating the export file " + mExpFileName + " before upload failed.");
                             }
                         }
                     }
@@ -511,7 +525,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         else
                         {
                             mResetIpj(mSaveProject);
-                            throw new Exception("Validating the export file before upload failed.");
+                            throw new Exception("Validating the export file " + mExpFileName + " before upload failed.");
                         }
                     }
                     catch (Exception ex)
@@ -605,7 +619,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         else
                         {
                             mResetIpj(mSaveProject);
-                            throw new Exception("Validating the export file before upload failed.");
+                            throw new Exception("Validating the export file " + mExpFileName + " before upload failed.");
                         }
 
                     }
@@ -688,6 +702,87 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         throw new Exception("Validating the export file " + mExpFileName + " before upload failed.");
                     }
                 }
+
+                if (item == "NWD")
+                {
+                    //delete existing export file; note the resulting file name is e.g. "Drawing.idw.dwg
+                    string mExpFileName = mDocPath + ".nwd";
+                    if (System.IO.File.Exists(mExpFileName))
+                    {
+                        System.IO.FileInfo fileInfo = new FileInfo(mExpFileName);
+                        fileInfo.IsReadOnly = false;
+                        fileInfo.Delete();
+                    }
+
+                    mTrace.IndentLevel += 1;
+                    mTrace.WriteLine("NWD Export starts...");
+
+                    try
+                    {
+                        //disable navisworks progress bar whilst we do this procedure
+                        //Navisworks.DisableProgress();
+                        //open the inventor file with navisworks; opening other file formats creates a new navisworks file appending the import file
+                        NavisworksAutomation.OpenFile(mDoc.FullFileName);
+
+                        //save the new navisworks
+                        NavisworksAutomation.SaveFile(mExpFileName);
+                        //Navisworks.EnableProgress();
+
+                        //collect all export files for later upload
+                        mUploadFiles.Add(mExpFileName);
+                        System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.LastOrDefault());
+                        if (mExportFileInfo.Exists)
+                        {
+                            mTrace.WriteLine("Navisworks created file: " + mUploadFiles.LastOrDefault());
+                            mTrace.IndentLevel -= 1;
+                        }
+                        else
+                        {
+                            mResetIpj(mSaveProject);
+                            throw new Exception("Validating the export file " + mExpFileName + " before upload failed.");
+                        }
+                        //check if an NWC file has been created; if so, upload it                        
+                        System.IO.FileInfo mDocInfo = new System.IO.FileInfo(mDocPath);
+                        string mNWC = mDocPath.Replace(mDocInfo.Extension, ".nwc");
+                        System.IO.FileInfo mNwcInfo = new System.IO.FileInfo(mNWC);
+                        if (mDocInfo.Exists)
+                        {
+                            //align the file name according our convention
+                            string mNwcUpload = mDocPath + ".nwc";
+                            if (System.IO.File.Exists(mNwcUpload))
+                            {
+                                System.IO.FileInfo fileInfo = new FileInfo(mNwcUpload);
+                                fileInfo.IsReadOnly = false;
+                                fileInfo.Delete();
+                            }
+                            System.IO.File.Move(mNWC, mNwcUpload);
+                            mNwcInfo = new System.IO.FileInfo(mNwcUpload);
+                            if (mNwcInfo.Exists)
+                            {
+                                mUploadFiles.Add(mNwcUpload);
+                            }
+                        }
+
+                    }
+                    catch (Autodesk.Navisworks.Api.Automation.AutomationException e)
+                    {
+                        mResetIpj(mSaveProject);
+                        //return an error message to the job queue
+                        throw new Exception("Navisworks Automation Error: " + e.Message);
+                    }
+                    catch (Autodesk.Navisworks.Api.Automation.AutomationDocumentFileException e)
+                    {
+                        mResetIpj(mSaveProject);
+                        //return an error message to the job queue
+                        throw new Exception("Navisworks File Exception Error: " + e.Message);
+                    }
+                    finally
+                    {
+                        mNavisworksDispose();
+                    }
+
+                }
+
             }
 
             mDoc.Close(true);
@@ -894,6 +989,41 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                 mSaveProject.Activate();
             }
         }
+
+        private bool mGetNavisworksAutom()
+        {
+            try
+            {
+                NavisworksAutomation = Autodesk.Navisworks.Api.Automation.NavisworksApplication.TryGetRunningInstance();
+                if (NavisworksAutomation == null)
+                {
+                    //create NavisworksApplication automation object
+                    NavisworksAutomation = new Autodesk.Navisworks.Api.Automation.NavisworksApplication();
+                }
+                else
+                {
+                    mNavAutomExisted = true;
+                }
+            }
+            catch (Exception)
+            {}
+
+            return true;
+        }
+
+        private void mNavisworksDispose()
+        {
+            //don't terminate Navisworks if it has been running before
+            if (mNavAutomExisted != true)
+            {
+                if (NavisworksAutomation != null)
+                {
+                    NavisworksAutomation.Dispose();
+                    NavisworksAutomation = null;
+                }
+            }
+        }
+
         #endregion Job Execution
     }
 }
