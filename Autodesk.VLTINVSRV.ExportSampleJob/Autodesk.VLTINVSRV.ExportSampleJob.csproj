@@ -39,7 +39,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\2022\</OutputPath>
+    <OutputPath>bin\x64\Debug\2023\</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -89,6 +89,14 @@
       <HintPath>..\..\..\..\OneDrive - Autodesk\Vault Customization\SDK References 2023\Inventor 2023 Bin\Autodesk.Inventor.Interop.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Autodesk.Navisworks.Automation">
+      <HintPath>..\..\..\..\OneDrive - Autodesk\Vault Customization\SDK References 2023\Navisworks 2023 SDK\NET\bin\Autodesk.Navisworks.Automation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Autodesk.Navisworks.Resolver">
+      <HintPath>..\..\..\..\OneDrive - Autodesk\Vault Customization\SDK References 2023\Navisworks 2023 SDK\NET\bin\Autodesk.Navisworks.Resolver.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -106,6 +114,9 @@
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="Autodesk.VltInvSrv.ExportSampleJob.vcet.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

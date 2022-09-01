@@ -5,10 +5,10 @@
   <LogFileLocation>C:\Temp\</LogFileLocation>
 
   <!-- Export File Format(s)-->
-  <!--  Supported Values/File Formats are: STP, JT, SMDXF, 3DDWG, 2DDWG, IMAGE -->
+  <!--  Supported Values/File Formats are: STP, JT, SMDXF, 3DDWG, 2DDWG, IMAGE, NWD -->
   <!--  Multiple Outputs per jobs are supported, list all required formats comma separated, e.g., STP, JT, SMDXF -->
   <!--  To Export Sheet Metal Flatpattern SMDXF - NOTE: distinct category for sheet metal part required, if job handles parts and SM-parts-->
-  <ExportFormats>IMAGE</ExportFormats>
+  <ExportFormats>NWD</ExportFormats>
 
   <!--Sheet Metal Category Name-->
   <SmCatDispName>Sheet Metal Part</SmCatDispName>
