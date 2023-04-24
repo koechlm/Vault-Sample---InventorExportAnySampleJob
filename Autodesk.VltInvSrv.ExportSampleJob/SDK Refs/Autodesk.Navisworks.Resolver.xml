@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Autodesk.Navisworks.Resolver</name>
+  </assembly>
+  <members>
+    <member name="T:Autodesk.Navisworks.Api.Resolver.Resolver">
+      <summary>
+            Class containing methods used to allow Navisworks .NET Control solutions to bind to a particular Navisworks Runtime.
+            </summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Resolver.Resolver.#ctor"></member>
+    <member name="M:Autodesk.Navisworks.Api.Resolver.Resolver.TryBindToRuntime(System.String,System.Boolean)">
+      <summary>
+            Used to allow Navisworks .NET Control solutions to bind to a particular Navisworks Runtime.
+            If successful it returns the runtime that was actually bound to, otherwise null. Once succeeded
+            the method will aways return the original binding.
+            This must be called before any attempt is to load any other Navisworks Assemblies, including  
+            Autodesk.Navisworks.Controls and Autodesk.Navisworks.Api.
+            You can put multiple semi-colon separated
+            <see cref="T:Autodesk.Navisworks.Api.Resolver.RuntimeNames">product name entries</see> here in preference order.
+            </summary>
+    </member>
+    <member name="T:Autodesk.Navisworks.Api.Resolver.RuntimeNames">
+      <summary>
+            Names of commonly found Navisworks Runtimes.
+            </summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Resolver.RuntimeNames.#ctor"></member>
+    <member name="P:Autodesk.Navisworks.Api.Resolver.RuntimeNames.Any">
+      <summary>
+            Signifies any runtime acceptable.
+            </summary>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Resolver.RuntimeNames.NavisworksManage">
+      <summary>
+            Name of runtime corresponding to Navisworks Manage.
+            </summary>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Resolver.RuntimeNames.NavisworksSimulate">
+      <summary>
+            Name of runtime corresponding to Navisworks Simulate.
+            </summary>
+    </member>
+  </members>
+</doc>

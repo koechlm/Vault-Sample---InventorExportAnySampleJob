@@ -30,7 +30,7 @@ using Inventor;
 //using Autodesk.Navisworks.Api.Automation;
 using Autodesk.Navisworks.Api.Resolver;
 
-[assembly: ApiVersion("16.0")]
+[assembly: ApiVersion("17.0")]
 [assembly: ExtensionId("385b4efe-36be-485d-a533-1e84369d1bea")]
 
 

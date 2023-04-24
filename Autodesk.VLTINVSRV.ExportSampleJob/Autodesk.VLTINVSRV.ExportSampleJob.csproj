@@ -48,7 +48,7 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\2023\</OutputPath>
+    <OutputPath>bin\x64\Release\2024\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -127,6 +127,26 @@
     <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="SDK Refs\Autodesk.Connectivity.Explorer.Extensibility.dll" />
+    <Content Include="SDK Refs\Autodesk.Connectivity.Explorer.Extensibility.XML" />
+    <Content Include="SDK Refs\Autodesk.Connectivity.Extensibility.Framework.dll" />
+    <Content Include="SDK Refs\Autodesk.Connectivity.Extensibility.Framework.XML" />
+    <Content Include="SDK Refs\Autodesk.Connectivity.JobProcessor.Extensibility.dll" />
+    <Content Include="SDK Refs\Autodesk.Connectivity.JobProcessor.Extensibility.XML" />
+    <Content Include="SDK Refs\Autodesk.Connectivity.WebServices.dll" />
+    <Content Include="SDK Refs\Autodesk.Connectivity.WebServices.XML" />
+    <Content Include="SDK Refs\Autodesk.DataManagement.Client.Framework.dll" />
+    <Content Include="SDK Refs\Autodesk.DataManagement.Client.Framework.Vault.dll" />
+    <Content Include="SDK Refs\Autodesk.DataManagement.Client.Framework.Vault.xml" />
+    <Content Include="SDK Refs\Autodesk.DataManagement.Client.Framework.xml" />
+    <Content Include="SDK Refs\Autodesk.Inventor.Interop.dll" />
+    <Content Include="SDK Refs\Autodesk.Inventor.Interop.xml" />
+    <Content Include="SDK Refs\Autodesk.Navisworks.Api.dll" />
+    <Content Include="SDK Refs\Autodesk.Navisworks.Api.xml" />
+    <Content Include="SDK Refs\Autodesk.Navisworks.Automation.dll" />
+    <Content Include="SDK Refs\Autodesk.Navisworks.Automation.xml" />
+    <Content Include="SDK Refs\Autodesk.Navisworks.Resolver.dll" />
+    <Content Include="SDK Refs\Autodesk.Navisworks.Resolver.xml" />
     <Content Include="Settings - SheetMetal Sample.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
