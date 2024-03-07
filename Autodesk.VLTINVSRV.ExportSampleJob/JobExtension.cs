@@ -27,8 +27,10 @@ using Autodesk.DataManagement.Client.Framework.Currency;
 using Autodesk.Connectivity.JobProcessor.Extensibility;
 using ACW = Autodesk.Connectivity.WebServices;
 using Inventor;
-//using Autodesk.Navisworks.Api.Automation;
+using Autodesk.Navisworks.Api.Automation;
 using Autodesk.Navisworks.Api.Resolver;
+using Autodesk.Navisworks.Api.Controls;
+
 
 [assembly: ApiVersion("17.0")]
 [assembly: ExtensionId("385b4efe-36be-485d-a533-1e84369d1bea")]
@@ -133,6 +135,10 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
 
             // only run the job for source file types, supported by exports (as of today)
             List<string> mFileExtensions = new List<string> { ".ipt", ".iam", ".idw" }; //ipn is not supported by InventorServer
+            if (settings.ExportFormats.Contains("NWD"))
+            {
+                mFileExtensions.AddRange(new List<string> { ".sldasm", ".sldprt" });
+            }
             ACW.File mFile = mWsMgr.DocumentService.GetFileById(mEntId);
             if (!mFileExtensions.Any(n => mFile.Name.ToLower().EndsWith(n)))
             {
@@ -224,6 +230,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     else
                     {
                         mTrace.WriteLine("Translator job required Navisworks, but failed to get an instance of the application; job continues to export other formats.");
+                        throw new Exception("Translator job's single task creating a Navisworks file failed: could not find or start Navisworks application.");
                     }
                 }
             }
@@ -375,15 +382,16 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
 
             #region VaultInventorServer CAD Export
 
-            mTrace.WriteLine("Job opens source file.");
+            mTrace.WriteLine("Job starts task for each export format listed.");
             Document mDoc = null;
-            mDoc = mInv.Documents.Open(mDocPath);
 
             //use the matching export addin and export options
             foreach (string item in mExpFrmts)
             {
                 if (item == "STP")
                 {
+                    //use Inventor to open document
+                    mDoc = mInv.Documents.Open(mDocPath);
                     //activate STEP Translator environment,
                     try
                     {
@@ -434,10 +442,15 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         mResetIpj(mSaveProject);
                         mTrace.WriteLine("STEP Export Failed: " + ex.Message);
                     }
+
+                    mDoc.Close(true);
+                    mTrace.WriteLine("Source file closed");
                 }
 
                 if (item == "JT")
                 {
+                    //use Inventor to open document
+                    mDoc = mInv.Documents.Open(mDocPath);
                     //activate JT Translator environment,
                     try
                     {
@@ -487,10 +500,15 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         mResetIpj(mSaveProject);
                         mTrace.WriteLine("JT Export Failed: " + ex.Message);
                     }
+
+                    mDoc.Close(true);
+                    mTrace.WriteLine("Source file closed");
                 }
 
                 if (item == "SMDXF")
                 {
+                    //use Inventor to open document
+                    mDoc = mInv.Documents.Open(mDocPath);
                     //activate DXF translator
                     try
                     {
@@ -533,10 +551,15 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         mResetIpj(mSaveProject);
                         mTrace.WriteLine("SMDXF Export Failed: " + ex.Message);
                     }
+
+                    mDoc.Close(true);
+                    mTrace.WriteLine("Source file closed");
                 }
 
                 if (item == "3DDWG" || item == "2DDWG")
                 {
+                    //use Inventor to open document
+                    mDoc = mInv.Documents.Open(mDocPath);
                     try
                     {
                         //activate DXF/DWG translator
@@ -628,10 +651,16 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         mResetIpj(mSaveProject);
                         throw new Exception("Failed to activate DWG Translator Add-in or prepairing the export options: " + ex.Message);
                     }
+
+                    mDoc.Close(true);
+                    mTrace.WriteLine("Source file closed");
                 }
 
                 if (item == "IMAGE")
                 {
+                    //use Inventor to open document
+                    mDoc = mInv.Documents.Open(mDocPath);
+
                     //delete existing export file; note the resulting file name is e.g. "Drawing.idw.dwg
                     string mExpFileName = mDocPath + "." + mSettings.ImgFileType.ToLower();
                     if (System.IO.File.Exists(mExpFileName))
@@ -701,6 +730,9 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         mResetIpj(mSaveProject);
                         throw new Exception("Validating the export file " + mExpFileName + " before upload failed.");
                     }
+
+                    mDoc.Close(true);
+                    mTrace.WriteLine("Source file closed");
                 }
 
                 if (item == "NWD")
@@ -721,8 +753,8 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     {
                         //disable navisworks progress bar whilst we do this procedure
                         //Navisworks.DisableProgress();
-                        //open the inventor file with navisworks; opening other file formats creates a new navisworks file appending the import file
-                        NavisworksAutomation.OpenFile(mDoc.FullFileName);
+                        //open the file with navisworks; opening other file formats creates a new navisworks file appending the import file
+                        NavisworksAutomation.OpenFile(mDocPath);
 
                         //save the new navisworks
                         NavisworksAutomation.SaveFile(mExpFileName);
@@ -785,8 +817,6 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
 
             }
 
-            mDoc.Close(true);
-            mTrace.WriteLine("Source file closed");
 
             //switch temporarily used project file back to original one
             mResetIpj(mSaveProject);
@@ -914,18 +944,22 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
 
                     //get properties assigned to source file and add definition/value pair to dictionary
                     mSourcePropInsts = mWsMgr.PropertyService.GetProperties("FILE", new long[] { mFile.Id }, mFilePropDefs.ToArray());
-                    ACW.PropDef[] propDefs = connection.WebServiceManager.PropertyService.GetPropertyDefinitionsByEntityClassId("FILE");
-                    foreach (ACW.PropInst item in mSourcePropInsts)
+                    if (mSourcePropInsts != null)
                     {
-                        mPropDef = connection.PropertyManager.GetPropertyDefinitionById(item.PropDefId);
-                        ACW.PropDef propDef = propDefs.SingleOrDefault(n => n.Id == item.PropDefId);
-                        mPropDictonary.Add(propDef, item.Val);
-                    }
+                        ACW.PropDef[] propDefs = connection.WebServiceManager.PropertyService.GetPropertyDefinitionsByEntityClassId("FILE");
+                        foreach (ACW.PropInst item in mSourcePropInsts)
+                        {
+                            mPropDef = connection.PropertyManager.GetPropertyDefinitionById(item.PropDefId);
+                            ACW.PropDef propDef = propDefs.SingleOrDefault(n => n.Id == item.PropDefId);
+                            mPropDictonary.Add(propDef, item.Val);
+                        }
 
-                    //update export file using the property dictionary; note this the IExplorerUtil method bumps file iteration and requires no check out
-                    mExplUtil.UpdateFileProperties(mExpFile, mPropDictonary);
-                    mExpFile = (mWsMgr.DocumentService.GetLatestFileByMasterId(mExpFile.MasterId));
+                        //update export file using the property dictionary; note this the IExplorerUtil method bumps file iteration and requires no check out
+                        mExplUtil.UpdateFileProperties(mExpFile, mPropDictonary);
+                        mExpFile = (mWsMgr.DocumentService.GetLatestFileByMasterId(mExpFile.MasterId));
+                    }
                 }
+
                 catch (Exception ex)
                 {
                     mTrace.WriteLine("Job failed copying properties from source file " + mFile.Name + " to export file: " + mExpFile.Name + " . Exception details: " + ex);
@@ -994,7 +1028,15 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
         {
             try
             {
+                //workaround the Navisworks API initialization issue/regression in 2024
+                //Set Environment variable
+                string nwInstallDir = @"C:\Program Files\Autodesk\Navisworks Manage 2024";
+                System.Environment.SetEnvironmentVariable("PATH",
+                              System.Environment.GetEnvironmentVariable("PATH") + ";" + nwInstallDir);
+
+                //re-use existing instance
                 NavisworksAutomation = Autodesk.Navisworks.Api.Automation.NavisworksApplication.TryGetRunningInstance();
+
                 if (NavisworksAutomation == null)
                 {
                     //create NavisworksApplication automation object
@@ -1005,8 +1047,10 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     mNavAutomExisted = true;
                 }
             }
-            catch (Exception)
-            {}
+            catch (Exception ex)
+            {
+                throw new Exception("Job could not start Naviswork Manage with exception: ", ex);
+            }
 
             return true;
         }
@@ -1018,6 +1062,8 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             {
                 if (NavisworksAutomation != null)
                 {
+                    //Finish use of the API.
+                    Autodesk.Navisworks.Api.Controls.ApplicationControl.Terminate();
                     NavisworksAutomation.Dispose();
                     NavisworksAutomation = null;
                 }
