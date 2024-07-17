@@ -47,6 +47,7 @@ The job expects that all library definition files configured in the Inventor pro
 
 VERSION HISTORY / RELEASE NOTES:
 ---------------------------------
+2025.0.0.0 - updated for 2025 compatibility
 2024.0.0.0 - updated for 2024 compatibility
 2023.1.0.0 - implemented export to Navisworks NWD(+NWC)
 2023.0.0.0 - updated for 2023

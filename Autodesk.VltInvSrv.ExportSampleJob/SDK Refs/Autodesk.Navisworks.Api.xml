@@ -848,6 +848,682 @@ has canceled it (usually through progress reporting).
     <member name="M:Autodesk.Navisworks.Api.CivilAlignment.GetStationLabel(System.Double)"></member>
     <member name="P:Autodesk.Navisworks.Api.CivilAlignment.Name"></member>
     <member name="P:Autodesk.Navisworks.Api.CivilAlignment.StartStation"></member>
+    <member name="T:Autodesk.Navisworks.Api.ClipPlane">
+      <summary>
+A representation of a clipping plane.
+</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlane.#ctor"></member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlane.#ctor(Autodesk.Navisworks.Api.ClipPlane)">
+      <exception cref="T:System.ArgumentNullException">
+Argument 'other' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'other' has been Disposed
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlane.Alignment">
+      <summary>
+The clip plane alignment.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlane.AlignToOrientation(Autodesk.Navisworks.Api.ClipPlaneAlignment,Autodesk.Navisworks.Api.UnitVector3D,Autodesk.Navisworks.Api.UnitVector3D)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'up' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'up' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'front' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'front' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlane.AlignToPick(Autodesk.Navisworks.Api.ClipPlaneAlignment,Autodesk.Navisworks.Api.Point3D,Autodesk.Navisworks.Api.UnitVector3D)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'origin' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'origin' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'normal' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'normal' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlane.AlignToPick(Autodesk.Navisworks.Api.ClipPlaneAlignment,Autodesk.Navisworks.Api.Point3D,Autodesk.Navisworks.Api.UnitVector3D,Autodesk.Navisworks.Api.UnitVector3D)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'origin' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'origin' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'normal' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'normal' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'xAxis' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlane.ApplyTransform(Autodesk.Navisworks.Api.Transform3D)">
+      <summary>
+Transforms the clip plane.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'trans' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'trans' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlane.CopyFrom(Autodesk.Navisworks.Api.ClipPlane)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'from' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'from' has been Disposed
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlane.Default">
+      <summary>
+Is this clip plane in the default (uninitialized) state.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlane.Distance">
+      <summary>
+The distance of the plane from the world origin.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlane.Enabled">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlane.Initialize(Autodesk.Navisworks.Api.ClipPlaneAlignment,Autodesk.Navisworks.Api.Point3D,Autodesk.Navisworks.Api.UnitVector3D,Autodesk.Navisworks.Api.UnitVector3D)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'origin' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'origin' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'up' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'front' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlane.Initialize(Autodesk.Navisworks.Api.ClipPlaneAlignment,Autodesk.Navisworks.Api.Point3D,Autodesk.Navisworks.Api.UnitVector3D,Autodesk.Navisworks.Api.UnitVector3D,Autodesk.Navisworks.Api.UnitVector3D)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'origin' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'origin' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'up' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'front' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'normal' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlane.Initialize(Autodesk.Navisworks.Api.ClipPlaneAlignment,Autodesk.Navisworks.Api.Point3D,Autodesk.Navisworks.Api.UnitVector3D,Autodesk.Navisworks.Api.UnitVector3D,Autodesk.Navisworks.Api.UnitVector3D,Autodesk.Navisworks.Api.UnitVector3D)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'origin' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'origin' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'up' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'front' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'normal' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'xAxis' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlane.Initialize(Autodesk.Navisworks.Api.ClipPlaneAlignment,Autodesk.Navisworks.Api.UnitVector3D,System.Double)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'normal' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'normal' has been Disposed
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlane.IsReadOnly">
+      <summary>
+Gets a value indicating whether the object is read-only.
+</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlane.Move(System.Double)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlane.Normal">
+      <summary>
+The normal of the plane.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'normal' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'normal' has been Disposed
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlane.Origin">
+      <summary>
+The origin of the plane.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'origin' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'origin' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlane.Reset">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlane.State">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlane.Transform">
+      <summary>
+The transform of this plane.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'trans' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'trans' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlane.Translate(Autodesk.Navisworks.Api.Vector3D)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'offset' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'offset' has been Disposed
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlane.XAxis">
+      <summary>
+Returns the X axis for the clip plane.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+    </member>
+    <member name="T:Autodesk.Navisworks.Api.ClipPlaneAlignment">
+      <summary>
+Alignment of a clip plane.
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneAlignment.None">
+      <summary>
+Not aligned
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneAlignment.View">
+      <summary>
+Aligned with the view
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneAlignment.Back">
+      <summary>
+Aligned to the back
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneAlignment.Front">
+      <summary>
+Aligned to the front
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneAlignment.Left">
+      <summary>
+Aligned to the left
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneAlignment.Right">
+      <summary>
+Aligned to the right
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneAlignment.Top">
+      <summary>
+Aligned to the top
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneAlignment.Bottom">
+      <summary>
+Aligned to the bottom
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneAlignment.Surface">
+      <summary>
+Aligned with a surface
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneAlignment.Line">
+      <summary>
+Aligned with a line
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneAlignment.Custom">
+      <summary>
+Custom alignment
+</summary>
+    </member>
+    <member name="T:Autodesk.Navisworks.Api.ClipPlaneSet">
+      <summary>
+Represents the set of clip planes in a view.
+</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlaneSet.#ctor"></member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlaneSet.Box">
+      <summary>
+The clipping box position.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'box' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'box' has been Disposed
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlaneSet.BoxTransform">
+      <summary>
+The internal transform used for the section box.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlaneSet.Clips(Autodesk.Navisworks.Api.Point3D)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'point' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'point' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlaneSet.CopyFrom(Autodesk.Navisworks.Api.ClipPlaneSet)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'other' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'other' has been Disposed
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlaneSet.CurrentPlane">
+      <summary>
+The current clip plane.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlaneSet.CurrentPlaneIndex">
+      <summary>
+The index of the current plane.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlaneSet.Enabled">
+      <summary>
+Is the clipping set enabled.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlaneSet.FitToBox(Autodesk.Navisworks.Api.BoundingBox3D)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'boundingBox' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'boundingBox' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlaneSet.Get(System.Int32)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlaneSet.GetOrientedBox(Autodesk.Navisworks.Api.BoundingBox3D,Autodesk.Navisworks.Api.Rotation3D)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'box' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'rotation' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlaneSet.GetTransform(System.Int32)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlaneSet.IsOffsetPlanes(Autodesk.Navisworks.Api.ClipPlaneSet)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'other' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'other' has been Disposed
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlaneSet.IsReadOnly">
+      <summary>
+Gets a value indicating whether the object is read-only.
+</summary>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlaneSet.Linked">
+      <summary>
+Are the clip planes linked.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlaneSet.Mode">
+      <summary>
+The mode of the set.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ClipPlaneSet.Range">
+      <summary>
+The range over which the clip planes operate.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'range' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'range' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlaneSet.SetOrientedBox(Autodesk.Navisworks.Api.BoundingBox3D,Autodesk.Navisworks.Api.Rotation3D)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'box' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'box' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'rotation' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'rotation' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlaneSet.SetTransform(System.Int32,Autodesk.Navisworks.Api.Transform3D)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'trans' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'trans' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlaneSet.Size">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlaneSet.Transform(Autodesk.Navisworks.Api.Transform3D)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'trans' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'trans' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlaneSet.Translate(System.Int32,Autodesk.Navisworks.Api.Vector3D)">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'offset' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'offset' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlaneSet.ValueEquals(Autodesk.Navisworks.Api.ClipPlaneSet)">
+      <summary>
+Performs comparison 'By Value'
+</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ClipPlaneSet.ValueEquals(Autodesk.Navisworks.Api.ClipPlaneSet,Autodesk.Navisworks.Api.ClipPlaneSet)">
+      <summary>
+Compares the two references 'By Value'
+</summary>
+    </member>
+    <member name="T:Autodesk.Navisworks.Api.ClipPlaneSetMode">
+      <summary>
+The mode of the clip plane set.
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneSetMode.Planes">
+      <summary>
+Planes
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneSetMode.Box">
+      <summary>
+Box
+</summary>
+    </member>
+    <member name="T:Autodesk.Navisworks.Api.ClipPlaneState">
+      <summary>
+Possible states a clip plane can be in.
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneState.Default">
+      <summary>
+Default (uninitialized)
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneState.Enabled">
+      <summary>
+Enabled
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.ClipPlaneState.Disabled">
+      <summary>
+Disabled
+</summary>
+    </member>
     <member name="T:Autodesk.Navisworks.Api.Color">
       <summary>
 Represents a color as three floating-point components (r,g,b) with a normal range 0.0 to 1.0. Immutable.
@@ -2837,6 +3513,18 @@ Enumeration of Navisworks <see cref="T:Autodesk.Navisworks.Api.Document">Documen
     </member>
     <member name="F:Autodesk.Navisworks.Api.DocumentFileVersion.Navisworks2021">
       <summary>Version of file format used by Navisworks 2021</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.DocumentFileVersion.Navisworks2022">
+      <summary>Version of file format used by Navisworks 2022</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.DocumentFileVersion.Navisworks2023">
+      <summary>Version of file format used by Navisworks 2023</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.DocumentFileVersion.Navisworks2024">
+      <summary>Version of file format used by Navisworks 2024</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.DocumentFileVersion.Navisworks2025">
+      <summary>Version of file format used by Navisworks 2025</summary>
     </member>
     <member name="T:Autodesk.Navisworks.Api.DocumentInfo">
       <summary>
@@ -7128,6 +7816,20 @@ Object has been Disposed
       <summary>Returns a <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.</summary>
       <returns>A <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.</returns>
     </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstant.UserEquals(Autodesk.Navisworks.Api.NamedConstant)">
+      <summary>
+Is this constant the same as another constant.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'other' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'other' has been Disposed
+</exception>
+    </member>
     <member name="P:Autodesk.Navisworks.Api.NamedConstant.Value">
       <summary>
 Value of constant
@@ -7135,6 +7837,231 @@ Value of constant
       <exception cref="T:System.ObjectDisposedException">
 Object has been Disposed
 </exception>
+    </member>
+    <member name="T:Autodesk.Navisworks.Api.NamedConstantCollection">
+      <summary>
+A collection of <see cref="T:Autodesk.Navisworks.Api.NamedConstant" /> objects.
+</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.#ctor">
+      <summary>
+Create an empty collection
+</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.#ctor(Autodesk.Navisworks.Api.NamedConstantCollection)">
+      <summary>
+Create a collection that is a copy of from
+</summary>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'from' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'from' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#Generic#ICollection{T}#Add(Autodesk.Navisworks.Api.NamedConstant)">
+      <summary>Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1"></see>.</summary>
+      <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1"></see>.</param>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"></see> is read-only.</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#IList#Add(System.Object)">
+      <summary>
+Adds an item to the <see cref="T:System.Collections.IList" />.
+</summary>
+      <param name="value">
+The <see cref="T:System.Object" /> to add to the <see cref="T:System.Collections.IList" />.
+</param>
+      <returns>
+The position into which the new element was inserted.
+</returns>
+      <exception cref="T:System.NotSupportedException">
+The <see cref="T:System.Collections.IList" /> is read-only.-or- The <see cref="T:System.Collections.IList" /> has a fixed size.
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#IList#Clear">
+      <summary>Removes all items from the <see cref="T:System.Collections.IList"></see>.</summary>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.IList"></see> is read-only. </exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#Generic#ICollection{T}#IsReadOnly">
+      <summary>
+Gets a value indicating whether the object is read-only.
+</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.Contains(Autodesk.Navisworks.Api.NamedConstant)">
+      <summary>
+Determines whether the SavedItemCollection contains a specific value.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'item' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#IList#Contains(System.Object)">
+      <summary>
+Determines whether the <see cref="T:System.Collections.IList" /> contains a specific value.
+</summary>
+      <param name="value">
+The <see cref="T:System.Object" /> to locate in the <see cref="T:System.Collections.IList" />.
+</param>
+      <returns>
+true if the <see cref="T:System.Object" /> is found in the <see cref="T:System.Collections.IList" />; otherwise, false.
+</returns>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.CopyTo(Autodesk.Navisworks.Api.NamedConstant[],System.Int32)">
+      <summary>Copies the elements of the <see cref="T:System.Collections.Generic.ICollection`1"></see> to an <see cref="T:System.Array"></see>, starting at a particular <see cref="T:System.Array"></see> index.</summary>
+      <param name="array">The one-dimensional <see cref="T:System.Array"></see> that is the destination of the elements copied from <see cref="T:System.Collections.Generic.ICollection`1"></see>. The <see cref="T:System.Array"></see> must have zero-based indexing.</param>
+      <param name="arrayIndex">The zero-based index in array at which copying begins.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">arrayIndex is less than 0.</exception>
+      <exception cref="T:System.ArgumentNullException">array is null.</exception>
+      <exception cref="T:System.ArgumentException">array is multidimensional.-or-arrayIndex is equal to or greater than the length of array.-or-The number of elements in the source <see cref="T:System.Collections.Generic.ICollection`1"></see> is greater than the available space from arrayIndex to the end of the destination array.-or-Type T cannot be cast automatically to the type of the destination array.</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copies the elements of the <see cref="T:System.Collections.ICollection"></see> to an <see cref="T:System.Array"></see>, starting at a particular <see cref="T:System.Array"></see> index.</summary>
+      <param name="array">The one-dimensional <see cref="T:System.Array"></see> that is the destination of the elements copied from <see cref="T:System.Collections.ICollection"></see>. The <see cref="T:System.Array"></see> must have zero-based indexing. </param>
+      <param name="index">The zero-based index in array at which copying begins. </param>
+      <exception cref="T:System.ArgumentNullException">array is null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">index is less than zero. </exception>
+      <exception cref="T:System.ArgumentException">array is multidimensional.-or- index is equal to or greater than the length of array.-or- The number of elements in the source <see cref="T:System.Collections.ICollection"></see> is greater than the available space from index to the end of the destination array. </exception>
+      <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.Collections.ICollection"></see> cannot be cast automatically to the type of the destination array. </exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.CopyTo(System.Collections.Generic.ICollection{Autodesk.Navisworks.Api.NamedConstant})">
+      <summary>
+Enumerates over the collection and copies the items into to
+</summary>
+      <param name="to">Collection to copy into</param>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.NamedConstantCollection.Count">
+      <summary>
+Gets the number of elements contained in the collection.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#Generic#ICollection{T}#Clear">
+      <summary>Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1"></see>.</summary>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"></see> is read-only. </exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#Generic#IList{T}#RemoveAt(System.Int32)">
+      <summary>Removes the <see cref="T:System.Collections.Generic.IList`1"></see> item at the specified index.</summary>
+      <param name="index">The zero-based index of the item to remove.</param>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.IList`1"></see> is read-only.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">index is not a valid index in the <see cref="T:System.Collections.Generic.IList`1"></see>.</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.GetEnumerator">
+      <summary>Returns an enumerator that can iterate through the collection.</summary>
+      <returns>An IEnumerator that can be used to iterate through the collection.</returns>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#IList#Item(System.Int32)">
+      <summary>
+Gets or sets the element at the specified index.
+</summary>
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'item' has been Disposed
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 'item' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 'item' is ReadOnly
+</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+Argument 'index' out of range
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.IndexOf(Autodesk.Navisworks.Api.NamedConstant)">
+      <summary>
+Determines the index of a specific item in the Collection
+</summary>
+      <exception cref="T:System.ArgumentException">
+Argument 'item' has been Disposed
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#IList#IndexOf(System.Object)">
+      <summary>
+Determines the index of a specific item in the <see cref="T:System.Collections.IList" />.
+</summary>
+      <param name="value">
+The <see cref="T:System.Object" /> to locate in the <see cref="T:System.Collections.IList" />.
+</param>
+      <returns>
+The index of value if found in the list; otherwise, -1.
+</returns>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#Generic#IList{T}#Insert(System.Int32,Autodesk.Navisworks.Api.NamedConstant)">
+      <summary>Inserts an item to the <see cref="T:System.Collections.Generic.IList`1"></see> at the specified index.</summary>
+      <param name="item">The object to insert into the <see cref="T:System.Collections.Generic.IList`1"></see>.</param>
+      <param name="index">The zero-based index at which item should be inserted.</param>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.IList`1"></see> is read-only.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">index is not a valid index in the <see cref="T:System.Collections.Generic.IList`1"></see>.</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#IList#Insert(System.Int32,System.Object)">
+      <summary>Inserts an item to the <see cref="T:System.Collections.IList"></see> at the specified index.</summary>
+      <param name="value">The <see cref="T:System.Object"></see> to insert into the <see cref="T:System.Collections.IList"></see>. </param>
+      <param name="index">The zero-based index at which value should be inserted. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">index is not a valid index in the <see cref="T:System.Collections.IList"></see>. </exception>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.IList"></see> is read-only.-or- The <see cref="T:System.Collections.IList"></see> has a fixed size. </exception>
+      <exception cref="T:System.NullReferenceException">value is null reference in the <see cref="T:System.Collections.IList"></see>.</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Returns an enumerator that can iterate through the collection.</summary>
+      <returns>An <see cref="T:System.Collections.IEnumerator">IEnumerator</see> that
+can be used to iterate through the collection.</returns>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#IList#IsFixedSize">
+      <summary>
+Gets a value indicating whether the <see cref="T:System.Collections.IList" /> has a fixed size.
+</summary>
+      <returns>
+true if the <see cref="T:System.Collections.IList" /> has a fixed size; otherwise, false.
+</returns>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.NamedConstantCollection.IsReadOnly">
+      <summary>
+Gets a value indicating whether the object is read-only.
+</summary>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#ICollection#IsSynchronized">
+      <summary>
+Gets a value indicating whether access to the <see cref="T:System.Collections.ICollection" /> is synchronized (thread safe).
+</summary>
+      <returns>
+true if access to the <see cref="T:System.Collections.ICollection" /> is synchronized (thread safe); otherwise, false.
+</returns>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.NamedConstantCollection.Item(System.Int32)"></member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#Generic#ICollection{T}#Remove(Autodesk.Navisworks.Api.NamedConstant)">
+      <summary>Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1"></see>.</summary>
+      <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1"></see>.</param>
+      <returns>true if item was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1"></see>; otherwise, false. This method also returns false if item is not found in the original <see cref="T:System.Collections.Generic.ICollection`1"></see>.</returns>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"></see> is read-only.</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#IList#Remove(System.Object)">
+      <summary>Removes the first occurrence of a specific object from the <see cref="T:System.Collections.IList"></see>.</summary>
+      <param name="value">The <see cref="T:System.Object"></see> to remove from the <see cref="T:System.Collections.IList"></see>. </param>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.IList"></see> is read-only.-or- The <see cref="T:System.Collections.IList"></see> has a fixed size. </exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#IList#RemoveAt(System.Int32)">
+      <summary>Removes the <see cref="T:System.Collections.IList"></see> item at the specified index.</summary>
+      <param name="index">The zero-based index of the item to remove. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">index is not a valid index in the <see cref="T:System.Collections.IList"></see>. </exception>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.IList"></see> is read-only.-or- The <see cref="T:System.Collections.IList"></see> has a fixed size. </exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.NamedConstantCollection.System#Collections#ICollection#SyncRoot">
+      <summary>
+Gets an object that can be used to synchronize access to the <see cref="T:System.Collections.ICollection" />.
+</summary>
+      <returns>
+An object that can be used to synchronize access to the <see cref="T:System.Collections.ICollection" />.
+</returns>
     </member>
     <member name="T:Autodesk.Navisworks.Api.NativeHandle">
       <summary>
@@ -7207,11 +8134,141 @@ Constructor for PickItemResult.
 The model item that was picked.
 </summary>
     </member>
+    <member name="P:Autodesk.Navisworks.Api.PickItemResult.Normal">
+      <summary>
+The normal of the picked item
+</summary>
+    </member>
     <member name="P:Autodesk.Navisworks.Api.PickItemResult.Point">
       <summary>
 The picked point on the surface of the picked model item (in world space). 
 </summary>
     </member>
+    <member name="P:Autodesk.Navisworks.Api.PickItemResult.ResultBits">
+      <summary>
+The type of item that was picked
+</summary>
+    </member>
+    <member name="T:Autodesk.Navisworks.Api.PickPrimitives">
+      <summary>
+Different types of primitive used to define geometry
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.None">
+      <summary>
+Nothing extra to return or do
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.Edge0To1">
+      <summary>
+Snap to tri edge between vertex 0 and 1
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.Edge1To2">
+      <summary>
+Snap to tri edge between vertex 1 and 2
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.Edge2To0">
+      <summary>
+Snap to tri edge between vertex 2 and 0
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.Edge">
+      <summary>
+Snap to any tri edge
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.Vertex0">
+      <summary>
+Snap to tri vertex 0
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.Vertex1">
+      <summary>
+Snap to tri vertex 1
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.Vertex2">
+      <summary>
+Snap to tri vertex 2
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.Vertex">
+      <summary>
+Snap to any vertex
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.LineVertex0">
+      <summary>
+Snap to line vertex 0
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.LineVertex1">
+      <summary>
+Snap to line vertex 1
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.LineVertex">
+      <summary>
+Snap to any line vertex
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.LineMiddle">
+      <summary>
+Snap to middle of the line
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.ArcCenter">
+      <summary>
+Snap to the center of circular and elliptical arcs
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.Point">
+      <summary>
+Point at pick
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.Distance">
+      <summary>
+Distance at pick
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.NearThreshold">
+      <summary>
+Nearer than near_threshold
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.Center">
+      <summary>
+Nearest to center, rather than to camera
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickPrimitives.CenterExactSurface">
+      <summary>
+Ignore surface not under center
+</summary>
+    </member>
+    <member name="T:Autodesk.Navisworks.Api.PickResults">
+      <summary>
+The result of a pick action.
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.PickResults.None"></member>
+    <member name="F:Autodesk.Navisworks.Api.PickResults.Edge0To1"></member>
+    <member name="F:Autodesk.Navisworks.Api.PickResults.Edge1To2"></member>
+    <member name="F:Autodesk.Navisworks.Api.PickResults.Edge2To0"></member>
+    <member name="F:Autodesk.Navisworks.Api.PickResults.Edge"></member>
+    <member name="F:Autodesk.Navisworks.Api.PickResults.Vertex0"></member>
+    <member name="F:Autodesk.Navisworks.Api.PickResults.Vertex1"></member>
+    <member name="F:Autodesk.Navisworks.Api.PickResults.Vertex2"></member>
+    <member name="F:Autodesk.Navisworks.Api.PickResults.Vertex"></member>
+    <member name="F:Autodesk.Navisworks.Api.PickResults.LineVertex0"></member>
+    <member name="F:Autodesk.Navisworks.Api.PickResults.LineVertex1"></member>
+    <member name="F:Autodesk.Navisworks.Api.PickResults.LineVertex"></member>
+    <member name="F:Autodesk.Navisworks.Api.PickResults.LineMiddle"></member>
+    <member name="F:Autodesk.Navisworks.Api.PickResults.ArcCenter"></member>
+    <member name="F:Autodesk.Navisworks.Api.PickResults.Contained"></member>
     <member name="T:Autodesk.Navisworks.Api.Point2D">
       <summary>
 Represents a position in 2D space.
@@ -8223,6 +9280,7 @@ Does this category contain a String stable id ?
 Has this object been disposed ?
 </summary>
     </member>
+    <member name="P:Autodesk.Navisworks.Api.PropertyCategory.IsEditable"></member>
     <member name="P:Autodesk.Navisworks.Api.PropertyCategory.Name">
       <summary>
 Name of category (suitable for programmatic use)
@@ -11519,43 +12577,6 @@ Objects look as if they're behind the screen
 Focal point is on screen, objects can be in front and behind
 </summary>
     </member>
-    <member name="T:Autodesk.Navisworks.Api.StereoOptions">
-      <summary>
-Provides access to Stereo Options
-</summary>
-    </member>
-    <member name="P:Autodesk.Navisworks.Api.StereoOptions.StereoAvailable">
-      <summary>
-Is stereo rendering available (possible)?
-</summary>
-    </member>
-    <member name="P:Autodesk.Navisworks.Api.StereoOptions.StereoBalance">
-      <summary>
-Balance between objects appearing in front of or behind screen. Only used if mode
-is eSTEREO_AROUND_FOCAL_POINT. 0 is entirely in front of screen, 1 is balanced exactly around
-focal point, 2 is pushed behind focal point.
-</summary>
-    </member>
-    <member name="P:Autodesk.Navisworks.Api.StereoOptions.StereoEnabled">
-      <summary>
-Is stereo rendering enabled?
-</summary>
-    </member>
-    <member name="P:Autodesk.Navisworks.Api.StereoOptions.StereoMagnitude">
-      <summary>
-Strength of stereo effect. 0 is mono, 1 is normal, 2 is uncomfortably strong
-</summary>
-    </member>
-    <member name="P:Autodesk.Navisworks.Api.StereoOptions.StereoMode">
-      <summary>
-Stereo rendering mode
-</summary>
-    </member>
-    <member name="P:Autodesk.Navisworks.Api.StereoOptions.StereoSwapEyes">
-      <summary>
-Should we swap left and right eyes? Used to correct for poorly configured stereo hardware.
-</summary>
-    </member>
     <member name="T:Autodesk.Navisworks.Api.StereoViewpointCalculatedEventArgs">
       <summary>
 Event arguments when a stereo camera is calculated from a base camera.
@@ -14404,7 +15425,7 @@ A PickItemResult object that contains the picked item.
 Returns null if nothing is picked or coordinates are invalid.
 </returns>
     </member>
-    <member name="M:Autodesk.Navisworks.Api.View.PickItemFromPoint(System.Int32,System.Int32,System.Int32,System.Boolean)">
+    <member name="M:Autodesk.Navisworks.Api.View.PickItemFromPoint(System.Int32,System.Int32,System.Int32,System.Boolean,Autodesk.Navisworks.Api.PickPrimitives)">
       <summary>
 Picks a single item from the given window coordinate point.
 </summary>
@@ -14428,7 +15449,7 @@ A PickItemResult object that contains the picked item
 Returns null if nothing is picked or coordinates are invalid.
 </returns>
     </member>
-    <member name="M:Autodesk.Navisworks.Api.View.PickItemFromRectangle(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+    <member name="M:Autodesk.Navisworks.Api.View.PickItemFromRectangle(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,Autodesk.Navisworks.Api.PickPrimitives)">
       <summary>
 Picks a single item from the given window coordinate rectangle.
 </summary>
@@ -14595,6 +15616,20 @@ The diameter of the physical camera aperture in camera units. Used for advanced 
 Aspect ratio of camera (width/height).  Default 1.0 (square).
 </summary>
     </member>
+    <member name="P:Autodesk.Navisworks.Api.Viewpoint.ClipPlanes">
+      <exception cref="T:System.ObjectDisposedException">
+Object has been Disposed
+</exception>
+      <exception cref="T:System.NotSupportedException">
+Object is Read-Only
+</exception>
+      <exception cref="T:System.ArgumentNullException">
+Argument 's' is null
+</exception>
+      <exception cref="T:System.ArgumentException">
+Argument 's' has been Disposed
+</exception>
+    </member>
     <member name="M:Autodesk.Navisworks.Api.Viewpoint.CreateCopy">
       <summary>
 Creates a copy of the Viewpoint.
@@ -14649,11 +15684,6 @@ Determines if Lighting has been set
     <member name="P:Autodesk.Navisworks.Api.Viewpoint.HasLinearSpeed">
       <summary>
 Determines if LinearSpeed has been set
-</summary>
-    </member>
-    <member name="P:Autodesk.Navisworks.Api.Viewpoint.HasPivotPoint">
-      <summary>
-Determines if PivotPoint has been set   
 </summary>
     </member>
     <member name="P:Autodesk.Navisworks.Api.Viewpoint.HasRenderStyle">
@@ -14739,11 +15769,6 @@ Describes the users intentions if the product has to modify the near distance (t
     <member name="P:Autodesk.Navisworks.Api.Viewpoint.NearPlaneDistance">
       <summary>
 Near plane distance.
-</summary>
-    </member>
-    <member name="P:Autodesk.Navisworks.Api.Viewpoint.PivotPoint">
-      <summary>
-Position of the pivot point.
 </summary>
     </member>
     <member name="M:Autodesk.Navisworks.Api.Viewpoint.PointAt(Autodesk.Navisworks.Api.Point3D)">
@@ -15217,11 +16242,6 @@ Represents Application level options
     <member name="P:Autodesk.Navisworks.Api.ApplicationParts.ApplicationOptions.Grids">
       <summary>
 Provides access to <see cref="T:Autodesk.Navisworks.Api.GridsOptions">Grids Options</see>.
-</summary>
-    </member>
-    <member name="P:Autodesk.Navisworks.Api.ApplicationParts.ApplicationOptions.Stereo">
-      <summary>
-Provides access to <see cref="T:Autodesk.Navisworks.Api.StereoOptions">Stereo Options</see>.
 </summary>
     </member>
     <member name="T:Autodesk.Navisworks.Api.ApplicationParts.ApplicationPlugins">
@@ -18915,8 +19935,19 @@ Default constructor.
 </summary>
     </member>
     <member name="M:Autodesk.Navisworks.Api.Plugins.ClashResultActionPlugin.BeginExecute"></member>
+    <member name="M:Autodesk.Navisworks.Api.Plugins.ClashResultActionPlugin.CanExecute(Autodesk.Navisworks.Api.SavedItem)">
+      <summary>
+Test whether the item is in a state that is appropriate to use this plugin.
+</summary>
+    </member>
     <member name="M:Autodesk.Navisworks.Api.Plugins.ClashResultActionPlugin.EndExecute"></member>
     <member name="M:Autodesk.Navisworks.Api.Plugins.ClashResultActionPlugin.ExecuteAction(Autodesk.Navisworks.Api.SavedItem)"></member>
+    <member name="M:Autodesk.Navisworks.Api.Plugins.ClashResultActionPlugin.SupportsMultipleItems">
+      <summary>
+If false is returned then the plugin will only be available to be called
+when just a single item is selected in the clash UI Results list.
+</summary>
+    </member>
     <member name="T:Autodesk.Navisworks.Api.Plugins.ClashResultActionPluginRecord">
       <summary>
 Represents a <see cref="T:Autodesk.Navisworks.Api.Plugins.ClashResultActionPluginRecord">ClashResultActionPluginRecord</see> record in Navisworks
@@ -19725,6 +20756,11 @@ Does this protocol support it's own cache?
 Returns the normal display name for a given URI.
 </summary>
     </member>
+    <member name="M:Autodesk.Navisworks.Api.Plugins.FileProtocolPlugin.TryGetMRUPath(System.Uri,System.String@)">
+      <summary>
+Returns the path to store in the MRU list for a given URI.
+</summary>
+    </member>
     <member name="M:Autodesk.Navisworks.Api.Plugins.FileProtocolPlugin.TryGetPhysicalPath(System.Uri,System.String@)">
       <summary>
 Returns the verbose display name for a given URI.
@@ -19764,6 +20800,53 @@ Returns the plugin, loads it if required
       <returns>
 null if plugin failed to load
 </returns>
+    </member>
+    <member name="T:Autodesk.Navisworks.Api.Plugins.HomeScreenExtensionPlugin">
+      <summary>
+A plugin for implementing a home screen extension
+</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Plugins.HomeScreenExtensionPlugin.#ctor">
+      <summary>
+Default constructor for a HomeScreenExtensionPlugin
+</summary>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Plugins.HomeScreenExtensionPlugin.FrameUrl">
+      <summary>
+The URL for the iframe to display.
+</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Plugins.HomeScreenExtensionPlugin.GetHostObjectOrigins">
+      <summary>
+Returns the host object origins.
+</summary>
+      <returns>The host object origins</returns>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Plugins.HomeScreenExtensionPlugin.HostObject">
+      <summary>
+The host object for the iframe.
+</summary>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Plugins.HomeScreenExtensionPlugin.HostObjectName">
+      <summary>
+The name to access HostObject.
+</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Plugins.HomeScreenExtensionPlugin.SetHostObjectOrigins(System.String[])">
+      <summary>
+Sets the host object origins. The host object is only accessible if the
+iframe's origin matches one of the provided origins (for security reasons).
+</summary>
+      <returns>The host object origins</returns>
+    </member>
+    <member name="T:Autodesk.Navisworks.Api.Plugins.HomeScreenExtensionPluginRecord">
+      <summary>
+Represents a <see cref="T:Autodesk.Navisworks.Api.Plugins.HomeScreenExtensionPlugin">HomeScreenExtensionPlugin</see> record in Navisworks
+</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Plugins.HomeScreenExtensionPluginRecord.LoadPlugin">
+      <summary>Returns the plugin, loads it if required</summary>
+      <exception cref="T:Autodesk.Navisworks.Api.Plugins.PluginLoadException">Plugin failed to load</exception>
     </member>
     <member name="T:Autodesk.Navisworks.Api.Plugins.InputPlugin">
       <summary>

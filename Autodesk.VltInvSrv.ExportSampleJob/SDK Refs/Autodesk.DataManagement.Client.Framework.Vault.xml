@@ -88,8 +88,11 @@ implement custom property definitions, create dependencies between existing prop
     <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.CCLibraryRMask_16">
       <summary>Looks up a localized resource of type System.Drawing.Bitmap.</summary>
     </member>
+    <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.CDCategoryWasNotUpdated">
+      <summary>Looks up a localized string similar to You do not have adequate permissions to update the category. Contact your administrator..</summary>
+    </member>
     <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.CDWasNotCopiedCorrectly">
-      <summary>Looks up a localized string similar to User doesn't have adequate permissions to complete this operation..</summary>
+      <summary>Looks up a localized string similar to You do not have adequate permissions to check in or check out a file. Contact your administrator..</summary>
     </member>
     <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.ChangeOrder_16">
       <summary>Looks up a localized resource of type System.Drawing.Bitmap.</summary>
@@ -127,7 +130,31 @@ implement custom property definitions, create dependencies between existing prop
     <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.ConfigFactory_16">
       <summary>Looks up a localized resource of type System.Drawing.Bitmap.</summary>
     </member>
+    <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.ConfigFactoryAsm_16">
+      <summary>Looks up a localized resource of type System.Drawing.Bitmap.</summary>
+    </member>
+    <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.ConfigFactoryAsm_32">
+      <summary>Looks up a localized resource of type System.Drawing.Bitmap.</summary>
+    </member>
+    <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.ConfigFactoryPart_16">
+      <summary>Looks up a localized resource of type System.Drawing.Bitmap.</summary>
+    </member>
+    <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.ConfigFactoryPart_32">
+      <summary>Looks up a localized resource of type System.Drawing.Bitmap.</summary>
+    </member>
     <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.ConfigMember_16">
+      <summary>Looks up a localized resource of type System.Drawing.Bitmap.</summary>
+    </member>
+    <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.ConfigMemberAsm_16">
+      <summary>Looks up a localized resource of type System.Drawing.Bitmap.</summary>
+    </member>
+    <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.ConfigMemberAsm_32">
+      <summary>Looks up a localized resource of type System.Drawing.Bitmap.</summary>
+    </member>
+    <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.ConfigMemberPart_16">
+      <summary>Looks up a localized resource of type System.Drawing.Bitmap.</summary>
+    </member>
+    <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.ConfigMemberPart_32">
       <summary>Looks up a localized resource of type System.Drawing.Bitmap.</summary>
     </member>
     <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.CopyDesign_UpdatedFileCategory">
@@ -173,7 +200,7 @@ implement custom property definitions, create dependencies between existing prop
       <summary>Looks up a localized string similar to Missing destination location.</summary>
     </member>
     <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.CopyDesignModelStateNotUpdate">
-      <summary>Looks up a localized string similar to Cannot copy file properties for model state enabled files. You can modify the properties after copying the files..</summary>
+      <summary>Looks up a localized string similar to Copying this model state-enabled file may reset or remove the properties table column to complete the operation..</summary>
     </member>
     <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.copyDesignProgressBarAnalyzingData">
       <summary>Looks up a localized string similar to Analyzing Data.</summary>
@@ -213,6 +240,9 @@ implement custom property definitions, create dependencies between existing prop
     </member>
     <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.CopyDesignPropertyValue_User">
       <summary>Looks up a localized string similar to User.</summary>
+    </member>
+    <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.CopyDesignPropertyValue_UserDisplayName">
+      <summary>Looks up a localized string similar to Display Name.</summary>
     </member>
     <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.CopyDesignRuleConditionContainsEntry">
       <summary>Looks up a localized string similar to contains.</summary>
@@ -634,8 +664,11 @@ references. Please run the Update File Reference command on parent file..</summa
     <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.WriteErrProviderNotFound">
       <summary>Looks up a localized string similar to File type is not supported for properties update..</summary>
     </member>
-    <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.WriteVaultPropsError">
-      <summary>Looks up a localized string similar to Vault properties could not be updated..</summary>
+    <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.WriteFileCategoryError">
+      <summary>Looks up a localized string similar to A file category could not be updated..</summary>
+    </member>
+    <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Resource.WriteFilePropsError">
+      <summary>Looks up a localized string similar to The file properties could not be updated..</summary>
     </member>
     <member name="P:Autodesk.DataManagement.Client.Framework.Vault.VaultStatusResource.Add_Large_16">
       <summary>Looks up a localized resource of type System.Drawing.Bitmap.</summary>
@@ -3751,6 +3784,10 @@ for a specific type of file</summary>
       <summary>Updates the model with the results of how a particular reference was updated</summary>
       <param>A value that uniquely identifies the reference that was updatedA value that determines how the reference was updatedAn optional description of how the reference was updated, or errors that occurred during the update</param>
     </member>
+    <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Models.ExtensionHandlers.UpdateFileReferencesModel.FileNewAndUnsaved">
+      <summary>Gets whether or not the file is new and never saved in the parent application. If so, the extension handler looks it up in the parent application rather than
+on disk.</summary>
+    </member>
     <member name="P:Autodesk.DataManagement.Client.Framework.Vault.Models.ExtensionHandlers.UpdateFileReferencesModel.FileOpened">
       <summary>Gets whether or not the file is already opened by the parent application. If so, extension handler does not need to open or close the file.</summary>
     </member>
@@ -4005,6 +4042,9 @@ same name. The moniker is case and white space sensitive.</param>
 added</summary>
       <returns>The list of all registered providers, in the order they were added.</returns>
     </member>
+    <member name="M:Autodesk.DataManagement.Client.Framework.Vault.Services.IVaultConnectionManagerService.ChangeVaultAccountPassword(System.String,System.String,System.String,System.String)">
+      <summary>API to change vault account password</summary>
+    </member>
     <member name="M:Autodesk.DataManagement.Client.Framework.Vault.Services.IVaultConnectionManagerService.CloseAllConnections">
       <summary>Logs out of all existing open connections to the server.</summary>
     </member>
@@ -4017,6 +4057,9 @@ added</summary>
       <summary>Attempts to get a connection object for an already existing connection</summary>
       <param>The name of the serverThe name of the vaultThe name of the userThe user's passwordAdditional options describing the type of connection</param>
       <returns>The connection object for an exisiting connection matching the input parameters or null if not matching connection is found.</returns>
+    </member>
+    <member name="M:Autodesk.DataManagement.Client.Framework.Vault.Services.IVaultConnectionManagerService.GetPasswordPolicySetting(System.String)">
+      <summary>API to get PasswordPolicySetting</summary>
     </member>
     <member name="M:Autodesk.DataManagement.Client.Framework.Vault.Services.IVaultConnectionManagerService.GetSiteCompatibilityWithVault(System.String,System.String)">
       <summary>Tests a site (a server location in a multi site environment) to make sure it is compatible with the master vault database. Compatibility problems could arise

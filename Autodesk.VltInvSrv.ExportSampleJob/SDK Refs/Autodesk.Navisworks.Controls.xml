@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Autodesk.Navisworks.Controls</name>
+  </assembly>
+  <members>
+    <member name="T:Autodesk.Navisworks.Api.Controls.ApplicationControl">
+      <summary>
+Allows initialization/shutdown of the API when using Navisworks controls. 
+Note that this is not the same as automation as you haven’t got a full Navisworks application running.
+</summary>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Controls.ApplicationControl.ApplicationType">
+      <summary>
+Specifies the type of application that will be built using Navisworks controls. The
+default is MultipleDocument.
+Must be called before <see cref="M:Autodesk.Navisworks.Api.Controls.ApplicationControl.Initialize">Initialize</see>.
+</summary>
+      <exception cref="T:System.InvalidOperationException">
+The API has already been initialized using <see cref="M:Autodesk.Navisworks.Api.Controls.ApplicationControl.Initialize">ApplicationControl.Initialize()</see></exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Controls.ApplicationControl.CloseFileAfterLoad">
+      <summary>
+By default Navisworks files are held open whilst being viewed. 
+</summary>
+      <exception cref="T:System.InvalidOperationException">
+The API has not yet been initialized using <see cref="M:Autodesk.Navisworks.Api.Controls.ApplicationControl.Initialize">ApplicationControl.Initialize()</see></exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Controls.ApplicationControl.Initialize">
+      <summary>
+Initialise the API. Safe to call multiple times, each call must have matching call
+to <see cref="M:Autodesk.Navisworks.Api.Controls.ApplicationControl.Terminate">Terminate</see>.
+</summary>
+      <exception cref="T:Autodesk.Navisworks.Api.RuntimeLoaderException">
+The program is trying to use a Navisworks control but the control 
+can't find a Navisworks runtime to use. For example if no Navisworks product is installed. 
+</exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Controls.ApplicationControl.IsHardwareAccelerationActive">
+      <summary>
+Indicates whether Hardware Acceleration is actually being used.
+</summary>
+      <exception cref="T:System.InvalidOperationException">
+The API has not yet been initialized using <see cref="M:Autodesk.Navisworks.Api.Controls.ApplicationControl.Initialize">ApplicationControl.Initialize()</see></exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Controls.ApplicationControl.IsHardwareAccelerationAvailable">
+      <summary>
+Indicates whether Hardware Acceleration is available.
+</summary>
+      <exception cref="T:System.InvalidOperationException">
+The API has not yet been initialized using <see cref="M:Autodesk.Navisworks.Api.Controls.ApplicationControl.Initialize">ApplicationControl.Initialize()</see></exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Controls.ApplicationControl.IsInitialized">
+      <summary>
+Is the API initialized and ready for use ?
+</summary>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Controls.ApplicationControl.PreferHardwareAcceleration">
+      <summary>
+Specifies whether Hardware Acceleration should be used if available.
+</summary>
+      <exception cref="T:System.InvalidOperationException">
+The API has not yet been initialized using <see cref="M:Autodesk.Navisworks.Api.Controls.ApplicationControl.Initialize">ApplicationControl.Initialize()</see></exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Controls.ApplicationControl.RequestedRuntimeLanguage">
+      <summary>
+Specifies the language that Navisworks should prefer (if installed).
+Must be called before <see cref="M:Autodesk.Navisworks.Api.Controls.ApplicationControl.Initialize">Initialize</see>.
+</summary>
+      <exception cref="T:System.InvalidOperationException">
+The API has already been initialized using <see cref="M:Autodesk.Navisworks.Api.Controls.ApplicationControl.Initialize">ApplicationControl.Initialize()</see></exception>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Controls.ApplicationControl.SelectionBehavior">
+      <summary>
+Specifies the Selection Behavior to be used during Picking.
+</summary>
+      <exception cref="T:System.InvalidOperationException">
+The API has not yet been initialized using <see cref="M:Autodesk.Navisworks.Api.Controls.ApplicationControl.Initialize">ApplicationControl.Initialize()</see></exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Controls.ApplicationControl.SetApplicationGui(Autodesk.Navisworks.Api.ApplicationParts.IApplicationGui)">
+      <summary>
+Sets/clears the implementation of IApplicationGui returned by 
+<see cref="P:Autodesk.Navisworks.Api.Application.Gui">Application.Gui</see>.
+</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Controls.ApplicationControl.Terminate">
+      <summary>
+Terminate use of the API. Each call must have a matching call
+to <see cref="M:Autodesk.Navisworks.Api.Controls.ApplicationControl.Initialize">Initialize</see>.
+</summary>
+    </member>
+    <member name="T:Autodesk.Navisworks.Api.Controls.ApplicationType">
+      <summary>
+Describes the type of application that will be built using Navisworks controls.
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.Controls.ApplicationType.MultipleDocument">
+      <summary>
+Multiple document application. 
+Any number of <see cref="T:Autodesk.Navisworks.Api.Controls.DocumentControl">DocumentControls</see> may be created. 
+A multiple document application supports a limited set of Navisworks APIs and Navisworks native
+file formats.
+</summary>
+    </member>
+    <member name="F:Autodesk.Navisworks.Api.Controls.ApplicationType.SingleDocument">
+      <summary>
+Single document application. 
+Only one <see cref="T:Autodesk.Navisworks.Api.Controls.DocumentControl">DocumentControl</see> may be created. 
+A single document application supports the complete set of Navisworks APIs and file readers.
+</summary>
+    </member>
+    <member name="T:Autodesk.Navisworks.Api.Controls.DocumentControl">
+      <summary>
+Standalone component that manages a Navisworks document
+</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Controls.DocumentControl.#ctor">
+      <summary>Default constructor for DocumentControl</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Controls.DocumentControl.#ctor(System.ComponentModel.IContainer)">
+      <summary>
+Overloaded constructor for DocumentControl.
+This should be used where possible.
+</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Controls.DocumentControl.Dispose(System.Boolean)"></member>
+    <member name="P:Autodesk.Navisworks.Api.Controls.DocumentControl.Document">
+      <summary>Gets a reference to the Navisworks Document</summary>
+      <exception cref="T:System.InvalidOperationException">
+The API has not yet been initialized using ApplicationControl.Initialize()
+</exception>
+      <exception cref="T:System.InvalidOperationException">
+Attempt to access a second Document when 
+ApplicationControl.ApplicationType is set to SingleDocument
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Controls.DocumentControl.SetAsMainDocument">
+      <summary>
+Set this control's document as the main document for the application. This should be called
+once at the beginning of the application. This DocumentControl should last for the lifetime
+of the application and be the last DocumentControl to be disposed when the application terminates.
+</summary>
+      <exception cref="T:System.InvalidOperationException">
+The API has not yet been initialized using ApplicationControl.Initialize()
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Controls.DocumentControl.ShowCullingOptionsGui">
+      <summary>
+Shows the modal dialog for Culling Options.
+</summary>
+      <exception cref="T:System.InvalidOperationException">
+The API has not yet been initialized using ApplicationControl.Initialize()
+</exception>
+    </member>
+    <member name="T:Autodesk.Navisworks.Api.Controls.ViewControl">
+      <summary>
+Standalone control that provides a graphical view of the Document in a DocumentControl.
+</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Controls.ViewControl.#ctor">
+      <summary>Default constructor for ViewControl</summary>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Controls.ViewControl.AllowCurrentSelectionDrag">
+      <summary>Determines if Selection dragging is enabled</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Controls.ViewControl.Dispose(System.Boolean)"></member>
+    <member name="P:Autodesk.Navisworks.Api.Controls.ViewControl.DocumentControl">
+      <summary>The DocumentControl that this view displays</summary>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Controls.ViewControl.FullScreen"></member>
+    <member name="M:Autodesk.Navisworks.Api.Controls.ViewControl.IsInputKey(System.Windows.Forms.Keys)">
+      <summary>Determines whether the specified key is a regular input key or a special key that requires preprocessing.</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Controls.ViewControl.SetActiveView">
+      <summary>Sets this as the active view for the purposes of the DocumentControl</summary>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.Controls.ViewControl.View">
+      <summary>Gets a reference to the Navisworks View</summary>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.Controls.ViewControl.WndProc(System.Windows.Forms.Message@)">
+      <summary>When overridden provides access to specific windows messages handled by the control during its lifetime.</summary>
+    </member>
+  </members>
+</doc>

@@ -4,6 +4,18 @@
     <name>Autodesk.Connectivity.Extensibility.Framework</name>
   </assembly>
   <members>
+    <member name="T:Autodesk.Connectivity.Extensibility.Framework.DotNameRuntime">
+      <summary>The dotnet DotNameRuntime requirements.</summary>
+    </member>
+    <member name="F:Autodesk.Connectivity.Extensibility.Framework.DotNameRuntime.Any">
+      <summary>Can run in netcore and netFramework mode.</summary>
+    </member>
+    <member name="F:Autodesk.Connectivity.Extensibility.Framework.DotNameRuntime.Framework">
+      <summary>Can only run in NetFramework mode.</summary>
+    </member>
+    <member name="F:Autodesk.Connectivity.Extensibility.Framework.DotNameRuntime.Core">
+      <summary>Can only run in netcore and net5+ mode.</summary>
+    </member>
     <member name="T:Autodesk.Connectivity.Extensibility.Framework.ErrorCodes">
       <summary>Error codes used for ExtensionExceptions</summary>
     </member>
@@ -106,6 +118,9 @@
     </member>
     <member name="P:Autodesk.Connectivity.Extensibility.Framework.ApiVersionAttribute.Version">
       <summary>Gets the version string.</summary>
+    </member>
+    <member name="P:Autodesk.Connectivity.Extensibility.Framework.Extension.DotNameRuntime">
+      <summary>Gets the runtime this extension will work on.</summary>
     </member>
     <member name="P:Autodesk.Connectivity.Extensibility.Framework.Extension.EnvironmentFolders">
       <summary>Gets the load paths that are added to the PATH environment variable.</summary>
@@ -337,6 +352,9 @@ Extension. The default value is false.</param>
     </member>
     <member name="F:Autodesk.Connectivity.Extensibility.Framework.VcetConfiguration.ExtensionSettings">
       <summary>Gets or sets the contents of the Cconnectivity.ExtensionSetting tag.</summary>
+    </member>
+    <member name="F:Autodesk.Connectivity.Extensibility.Framework.VcetExtension.DotNameRuntime">
+      <summary>Gets or sets the runtime requirements,set the default vaule equals Framework</summary>
     </member>
     <member name="F:Autodesk.Connectivity.Extensibility.Framework.VcetExtension.Interface">
       <summary>Gets or sets the interface that is used to communicate with the extension.</summary>
