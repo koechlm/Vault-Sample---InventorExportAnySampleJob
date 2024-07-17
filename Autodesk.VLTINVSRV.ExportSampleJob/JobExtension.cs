@@ -28,8 +28,6 @@ using Autodesk.Connectivity.JobProcessor.Extensibility;
 using ACW = Autodesk.Connectivity.WebServices;
 using Inventor;
 using Autodesk.Navisworks.Api.Automation;
-using Autodesk.Navisworks.Api.Resolver;
-using Autodesk.Navisworks.Api.Controls;
 
 
 [assembly: ApiVersion("17.0")]
@@ -46,8 +44,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
         private static string mLogFile = JOB_TYPE + ".log";
         private TextWriterTraceListener mTrace = new TextWriterTraceListener(System.IO.Path.Combine(
             mLogDir, mLogFile), "mJobTrace");
-        private Navisworks.Api.Automation.NavisworksApplication NavisworksAutomation;
-        private bool mNavAutomExisted = false;
+        private Navisworks.Api.Automation.NavisworksApplication mNavisworksAutomation;
 
         #region IJobHandler Implementation
         public bool CanProcess(string jobType)
@@ -219,9 +216,10 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             //validate Navisworks instance for NWD format
             if (mExpFrmts.Contains("NWD"))
             {
-                if (mGetNavisworksAutom() != true)
+                mNavisworksAutomation = mGetNavisworksAutom();
+                if (mNavisworksAutomation == null)
                 {
-                    //the job might continue successful for other formats than NWD
+                    //the job might continue successful for other formats than NWD; terminate only if NWD is the only target format
                     if (mExpFrmts.Count == 1 && mExpFrmts.FirstOrDefault() == "NWD")
                     {
                         mTrace.WriteLine("Translator job required Navisworks but failed to establish an application instance of Navisworks Manage; exit job with failure.");
@@ -230,7 +228,6 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     else
                     {
                         mTrace.WriteLine("Translator job required Navisworks, but failed to get an instance of the application; job continues to export other formats.");
-                        throw new Exception("Translator job's single task creating a Navisworks file failed: could not find or start Navisworks application.");
                     }
                 }
             }
@@ -735,7 +732,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     mTrace.WriteLine("Source file closed");
                 }
 
-                if (item == "NWD")
+                if (item == "NWD" && mNavisworksAutomation != null)
                 {
                     //delete existing export file; note the resulting file name is e.g. "Drawing.idw.dwg
                     string mExpFileName = mDocPath + ".nwd";
@@ -754,10 +751,10 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         //disable navisworks progress bar whilst we do this procedure
                         //Navisworks.DisableProgress();
                         //open the file with navisworks; opening other file formats creates a new navisworks file appending the import file
-                        NavisworksAutomation.OpenFile(mDocPath);
+                        mNavisworksAutomation.OpenFile(mDocPath);
 
                         //save the new navisworks
-                        NavisworksAutomation.SaveFile(mExpFileName);
+                        mNavisworksAutomation.SaveFile(mExpFileName);
                         //Navisworks.EnableProgress();
 
                         //collect all export files for later upload
@@ -1024,49 +1021,27 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             }
         }
 
-        private bool mGetNavisworksAutom()
+        private NavisworksApplication mGetNavisworksAutom()
         {
             try
             {
-                //workaround the Navisworks API initialization issue/regression in 2024
-                //Set Environment variable
-                string nwInstallDir = @"C:\Program Files\Autodesk\Navisworks Manage 2024";
-                System.Environment.SetEnvironmentVariable("PATH",
-                              System.Environment.GetEnvironmentVariable("PATH") + ";" + nwInstallDir);
-
-                //re-use existing instance
-                NavisworksAutomation = Autodesk.Navisworks.Api.Automation.NavisworksApplication.TryGetRunningInstance();
-
-                if (NavisworksAutomation == null)
-                {
-                    //create NavisworksApplication automation object
-                    NavisworksAutomation = new Autodesk.Navisworks.Api.Automation.NavisworksApplication();
-                }
-                else
-                {
-                    mNavAutomExisted = true;
-                }
+                //create NavisworksApplication automation object
+                mNavisworksAutomation = new NavisworksApplication();
             }
             catch (Exception ex)
             {
                 throw new Exception("Job could not start Naviswork Manage with exception: ", ex);
             }
 
-            return true;
+            return mNavisworksAutomation;
         }
 
         private void mNavisworksDispose()
         {
-            //don't terminate Navisworks if it has been running before
-            if (mNavAutomExisted != true)
+            if (mNavisworksAutomation != null)
             {
-                if (NavisworksAutomation != null)
-                {
-                    //Finish use of the API.
-                    Autodesk.Navisworks.Api.Controls.ApplicationControl.Terminate();
-                    NavisworksAutomation.Dispose();
-                    NavisworksAutomation = null;
-                }
+                mNavisworksAutomation.Dispose();
+                mNavisworksAutomation = null;
             }
         }
 
