@@ -1,6 +1,6 @@
-# Vault-Inventor-Server EXPORT JOB SAMPLE
+# Vault-Inventor-Server EXPORT / Navisworks Import JOB SAMPLE
 
-This custom job creates Inventor export format files using VaultInventorServer.
+This custom job creates Inventor export format files using VaultInventorServer or Navisworks NWD files from any format Navisworks supports.
 
 INTRODUCTION:
 ---------------------------------
