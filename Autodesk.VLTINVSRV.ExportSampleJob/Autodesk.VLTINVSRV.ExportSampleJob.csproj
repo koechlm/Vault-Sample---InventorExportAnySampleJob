@@ -104,7 +104,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>SDK Refs\Autodesk.Navisworks.Automation.dll</HintPath>
     </Reference>
-    <Reference Include="Autodesk.Navisworks.Controls, Version=21.0.0.0, Culture=neutral, PublicKeyToken=d85e58fa5af9b484, processorArchitecture=AMD64">
+    <Reference Include="Autodesk.Navisworks.Controls, Version=22.0.0.0, Culture=neutral, PublicKeyToken=d85e58fa5af9b484, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>SDK Refs\Autodesk.Navisworks.Controls.dll</HintPath>
     </Reference>
