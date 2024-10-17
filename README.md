@@ -1,4 +1,4 @@
-# Vault-Inventor-Server EXPORT / Navisworks Import JOB SAMPLE
+# Vault-Inventor-Server EXPORT / Navisworks Import / Solidworks PDF Export -- JOB SAMPLE
 
 This custom job creates Inventor export format files using VaultInventorServer or Navisworks NWD files from any format Navisworks supports.
 
@@ -11,8 +11,9 @@ The final steps adds export files to Vault, copying user properties, trying to s
 
 REQUIREMENTS:
 ---------------------------------
-Vault Workgroup, Vault Professional 2022 or newer. This job leverages the Vault Inventor Server component and does not require Inventor installation or Inventor license.
+Vault Vault Professional 2025 or newer. This job leverages the Vault Inventor Server component and does not require Inventor installation or Inventor license.
 However, the new option to create Navisworks files, requires Navisworks Manage installed on the Job Processor machine.
+The Solidworks PDF Export option requires Solidworks installed on the Job Processor machine.
 The job is valid for any Vault configuration fulfilling these requirements:
 - Enforce Workingfolder = Enabled
 - Enforce Inventor Project File = Enabled
@@ -47,6 +48,7 @@ The job expects that all library definition files configured in the Inventor pro
 
 VERSION HISTORY / RELEASE NOTES:
 ---------------------------------
+2025.1.0.0 - enhanced Navisworks export and added Navisworks DWF visualization export, added Solidworks PDF export option (design representation attachment)
 2025.0.0.0 - updated for 2025 compatibility
 2024.0.0.0 - updated for 2024 compatibility
 2023.1.0.0 - implemented export to Navisworks NWD(+NWC)
