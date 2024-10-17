@@ -112,6 +112,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>SDK Refs\Autodesk.Navisworks.Resolver.dll</HintPath>
     </Reference>
+    <Reference Include="SolidWorks.Interop.sldworks">
+      <HintPath>SDK Refs\SolidWorks.Interop.sldworks.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="SolidWorks.Interop.swconst">
+      <HintPath>SDK Refs\SolidWorks.Interop.swconst.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />

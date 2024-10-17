@@ -33,6 +33,9 @@ using Autodesk.Navisworks.Api.Controls;
 using static Autodesk.DataManagement.Client.Framework.Vault.Currency.Properties.PropertyValueConstants;
 using System.Xml.Linq;
 
+using SolidWorks.Interop.sldworks;
+using SolidWorks.Interop.swconst;
+
 
 [assembly: ApiVersion("18.0")]
 [assembly: ExtensionId("385b4efe-36be-485d-a533-1e84369d1bea")]
@@ -49,6 +52,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
         private TextWriterTraceListener mTrace = new TextWriterTraceListener(System.IO.Path.Combine(
             mLogDir, mLogFile), "mJobTrace");
         private Navisworks.Api.Automation.NavisworksApplication mNavisworksAutomation;
+        private SldWorks sldWorks;
 
         #region IJobHandler Implementation
         public bool CanProcess(string jobType)
@@ -140,6 +144,10 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             {
                 mFileExtensions.AddRange(new List<string> { ".sldasm", ".sldprt" });
             }
+            if (settings.ExportFormats.Contains("SLDDRW.PDF"))
+            {
+                mFileExtensions.Add(".slddrw");
+            }
             ACW.File mFile = mWsMgr.DocumentService.GetFileById(mEntId);
             if (!mFileExtensions.Any(n => mFile.Name.ToLower().EndsWith(n)))
             {
@@ -161,6 +169,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             List<string> mIptExpFrmts = new List<string> { "STP", "JT", "SMDXF", "3DDWG", "IMAGE", "NWD", "NWD+DWF" };
             List<string> mIamExpFrmts = new List<string> { "STP", "JT", "3DDWG", "IMAGE", "NWD", "NWD+DWF" };
             List<string> mIdwExpFrmts = new List<string> { "2DDWG", "IMAGE" };
+            List<string> mSwxExpFrmts = new List<string> { "SLDDRW.PDF" };
 
             if (settings.ExportFormats == null)
                 throw new Exception("Settings expect to list at least one export format!");
@@ -232,6 +241,25 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     else
                     {
                         mTrace.WriteLine("Translator job required Navisworks, but failed to get an instance of the application; job continues to export other formats.");
+                    }
+                }
+            }
+
+            //validate Solidworks instance for SLDDRW.PDF format
+            if (mExpFrmts.Contains("SLDDRW.PDF"))
+            {
+                sldWorks = mGetSldworks();
+                if (sldWorks == null)
+                {
+                    //the job might continue successful for other formats than SLDDRW.PDF; terminate only if SLDDRW.PDF is the only target format
+                    if (mExpFrmts.Count == 1 && mExpFrmts.FirstOrDefault().Contains("SLDDRW.PDF"))
+                    {
+                        mTrace.WriteLine("Translator job required Solidworks but failed to establish an application instance of Solidworks; exit job with failure.");
+                        throw new Exception("Translator job's single task creating a Solidworks PDF file failed: could not find or start Solidworks application.");
+                    }
+                    else
+                    {
+                        mTrace.WriteLine("Translator job required Solidworks, but failed to get an instance of the application; job continues to export other formats.");
                     }
                 }
             }
@@ -675,7 +703,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     mTrace.WriteLine("Image Export starts...");
 
                     //create camera object; note InventorServer does not provide document views (=saved camera)
-                    Camera mCamera = mInv.TransientObjects.CreateCamera();
+                    Inventor.Camera mCamera = mInv.TransientObjects.CreateCamera();
                     PartDocument mPartDoc = null;
                     AssemblyDocument mAssyDoc = null;
                     DrawingDocument mDrwDoc = null;
@@ -843,6 +871,71 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     finally
                     {
                         mNavisworksDispose();
+                    }
+
+                }
+
+                if (item == "SLDDRW.PDF")
+                {
+                    string mPDFName = mDocPath + ".pdf";
+                    if (System.IO.File.Exists(mPDFName))
+                    {
+                        System.IO.FileInfo fileInfo = new FileInfo(mPDFName);
+                        fileInfo.IsReadOnly = false;
+                        fileInfo.Delete();
+                    }
+
+                    mTrace.IndentLevel += 1;
+                    mTrace.WriteLine("SLDDRW -> PDF Export starts...");
+
+                    try
+                    {
+                        //open the file with Solidworks
+                        sldWorks.OpenDoc6(mDocPath, (int)swDocumentTypes_e.swDocDRAWING, (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", 0, 0);
+                        //sldWorks.OpenDoc(mDocPath, (int)swDocumentTypes_e.swDocDRAWING);
+
+                        //export the file as PDF
+                        ModelDoc2 swModel = (ModelDoc2)sldWorks.ActiveDoc;
+                        DrawingDoc swDraw = (DrawingDoc)swModel;
+
+                        // Save as PDF                        
+                        int errors = 0;
+                        int warnings = 0;
+                        bool status = swModel.Extension.SaveAs(mPDFName, (int)swSaveAsVersion_e.swSaveAsCurrentVersion, (int)swSaveAsOptions_e.swSaveAsOptions_Silent, null, ref errors, ref warnings);
+
+                        if (status)
+                        {
+                            Console.WriteLine("File saved successfully as PDF.");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Failed to save file as PDF. Errors: {errors}, Warnings: {warnings}");
+                        }
+
+                        //collect all export files for later upload
+                        System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mPDFName);
+                        if (mExportFileInfo.Exists)
+                        {
+                            mUploadFiles.Add(mPDFName);
+                            mTrace.WriteLine("Solidworks created file: " + mUploadFiles.LastOrDefault());
+                            mTrace.IndentLevel -= 1;
+                        }
+                        else
+                        {
+                            mResetIpj(mSaveProject);
+                            throw new Exception("Validating the export file " + mPDFName + " before upload failed.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        mResetIpj(mSaveProject);
+                        throw new Exception("Solidworks Export Failed: " + ex.Message);
+                    }
+                    finally
+                    {
+                        sldWorks.CloseAllDocuments(true);
+                        //todo: check if other Solidworks jobs are in the queue and keep the application open
+                        mSldworksDispose();
                     }
 
                 }
@@ -1111,6 +1204,28 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             {
                 mNavisworksAutomation.Dispose();
                 mNavisworksAutomation = null;
+            }
+        }
+
+        private SldWorks mGetSldworks()
+        {
+            sldWorks = Activator.CreateInstance(Type.GetTypeFromProgID("SldWorks.Application")) as SldWorks;
+            if (sldWorks != null)
+            {
+                return sldWorks;
+            }
+            else
+            {
+                throw new Exception("Job could not start a SolidWorks instance.");
+            }
+        }
+
+        private void mSldworksDispose()
+        {
+            if (sldWorks != null)
+            {
+                sldWorks.ExitApp();
+                sldWorks = null;
             }
         }
 
