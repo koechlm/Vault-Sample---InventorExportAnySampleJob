@@ -20801,6 +20801,30 @@ Returns the plugin, loads it if required
 null if plugin failed to load
 </returns>
     </member>
+    <member name="T:Autodesk.Navisworks.Api.Plugins.HomeScreenError"></member>
+    <member name="M:Autodesk.Navisworks.Api.Plugins.HomeScreenError.#ctor"></member>
+    <member name="P:Autodesk.Navisworks.Api.Plugins.HomeScreenError.ErrorStatus"></member>
+    <member name="P:Autodesk.Navisworks.Api.Plugins.HomeScreenError.HttpStatusCode"></member>
+    <member name="T:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.Unknown"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.CertificateCommonNameIsIncorrect"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.CertificateExpired"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.ClientCertificateContainsErrors"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.CertificateRevoked"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.CertificateIsInvalid"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.ServerUnreachable"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.Timeout"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.ErrorHttpInvalidServerResponse"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.ConnectionAborted"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.ConnectionReset"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.Disconnected"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.CannotConnect"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.HostNameNotResolved"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.OperationCanceled"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.RedirectFailed"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.UnexpectedError"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.ValidAuthenticationCredentialsRequired"></member>
+    <member name="F:Autodesk.Navisworks.Api.Plugins.HomeScreenErrorStatus.ValidProxyAuthenticationRequired"></member>
     <member name="T:Autodesk.Navisworks.Api.Plugins.HomeScreenExtensionPlugin">
       <summary>
 A plugin for implementing a home screen extension

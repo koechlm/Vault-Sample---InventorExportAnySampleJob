@@ -27,7 +27,14 @@ using Autodesk.DataManagement.Client.Framework.Currency;
 using Autodesk.Connectivity.JobProcessor.Extensibility;
 using ACW = Autodesk.Connectivity.WebServices;
 using Inventor;
+
 using Autodesk.Navisworks.Api.Automation;
+using Autodesk.Navisworks.Api.Controls;
+using static Autodesk.DataManagement.Client.Framework.Vault.Currency.Properties.PropertyValueConstants;
+using System.Xml.Linq;
+
+using SolidWorks.Interop.sldworks;
+using SolidWorks.Interop.swconst;
 
 
 [assembly: ApiVersion("18.0")]
@@ -45,6 +52,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
         private TextWriterTraceListener mTrace = new TextWriterTraceListener(System.IO.Path.Combine(
             mLogDir, mLogFile), "mJobTrace");
         private Navisworks.Api.Automation.NavisworksApplication mNavisworksAutomation;
+        private SldWorks sldWorks;
 
         #region IJobHandler Implementation
         public bool CanProcess(string jobType)
@@ -136,6 +144,10 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             {
                 mFileExtensions.AddRange(new List<string> { ".sldasm", ".sldprt" });
             }
+            if (settings.ExportFormats.Contains("SLDDRW.PDF"))
+            {
+                mFileExtensions.Add(".slddrw");
+            }
             ACW.File mFile = mWsMgr.DocumentService.GetFileById(mEntId);
             if (!mFileExtensions.Any(n => mFile.Name.ToLower().EndsWith(n)))
             {
@@ -154,9 +166,10 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             // you may add addtional execution filters, e.g., category name == "Sheet Metal Part"
 
             //only run the job for implemented/available combinations of source file and export file formats
-            List<string> mIptExpFrmts = new List<string> { "STP", "JT", "SMDXF", "3DDWG", "IMAGE", "NWD" };
-            List<string> mIamExpFrmts = new List<string> { "STP", "JT", "3DDWG", "IMAGE", "NWD" };
+            List<string> mIptExpFrmts = new List<string> { "STP", "JT", "SMDXF", "3DDWG", "IMAGE", "NWD", "NWD+DWF" };
+            List<string> mIamExpFrmts = new List<string> { "STP", "JT", "3DDWG", "IMAGE", "NWD", "NWD+DWF" };
             List<string> mIdwExpFrmts = new List<string> { "2DDWG", "IMAGE" };
+            List<string> mSwxExpFrmts = new List<string> { "SLDDRW.PDF" };
 
             if (settings.ExportFormats == null)
                 throw new Exception("Settings expect to list at least one export format!");
@@ -214,13 +227,13 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             }
 
             //validate Navisworks instance for NWD format
-            if (mExpFrmts.Contains("NWD"))
+            if (mExpFrmts.Contains("NWD") || mExpFrmts.Contains("NWD+DWF"))
             {
                 mNavisworksAutomation = mGetNavisworksAutom();
                 if (mNavisworksAutomation == null)
                 {
                     //the job might continue successful for other formats than NWD; terminate only if NWD is the only target format
-                    if (mExpFrmts.Count == 1 && mExpFrmts.FirstOrDefault() == "NWD")
+                    if (mExpFrmts.Count == 1 && (mExpFrmts.FirstOrDefault().Contains("NWD") || mExpFrmts.FirstOrDefault().Contains("NWD+DWF")))
                     {
                         mTrace.WriteLine("Translator job required Navisworks but failed to establish an application instance of Navisworks Manage; exit job with failure.");
                         throw new Exception("Translator job's single task creating a Navisworks file failed: could not find or start Navisworks application.");
@@ -228,6 +241,25 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     else
                     {
                         mTrace.WriteLine("Translator job required Navisworks, but failed to get an instance of the application; job continues to export other formats.");
+                    }
+                }
+            }
+
+            //validate Solidworks instance for SLDDRW.PDF format
+            if (mExpFrmts.Contains("SLDDRW.PDF"))
+            {
+                sldWorks = mGetSldworks();
+                if (sldWorks == null)
+                {
+                    //the job might continue successful for other formats than SLDDRW.PDF; terminate only if SLDDRW.PDF is the only target format
+                    if (mExpFrmts.Count == 1 && mExpFrmts.FirstOrDefault().Contains("SLDDRW.PDF"))
+                    {
+                        mTrace.WriteLine("Translator job required Solidworks but failed to establish an application instance of Solidworks; exit job with failure.");
+                        throw new Exception("Translator job's single task creating a Solidworks PDF file failed: could not find or start Solidworks application.");
+                    }
+                    else
+                    {
+                        mTrace.WriteLine("Translator job required Solidworks, but failed to get an instance of the application; job continues to export other formats.");
                     }
                 }
             }
@@ -380,7 +412,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             #region VaultInventorServer CAD Export
 
             mTrace.WriteLine("Job starts task for each export format listed.");
-            Document mDoc = null;
+            Inventor.Document mDoc = null;
 
             //use the matching export addin and export options
             foreach (string item in mExpFrmts)
@@ -671,7 +703,7 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     mTrace.WriteLine("Image Export starts...");
 
                     //create camera object; note InventorServer does not provide document views (=saved camera)
-                    Camera mCamera = mInv.TransientObjects.CreateCamera();
+                    Inventor.Camera mCamera = mInv.TransientObjects.CreateCamera();
                     PartDocument mPartDoc = null;
                     AssemblyDocument mAssyDoc = null;
                     DrawingDocument mDrwDoc = null;
@@ -709,8 +741,8 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     mCamera.ApplyWithoutTransition();
 
                     //set the background color; set different top and bottom color to get a gradient
-                    Color mTopClr = mInv.TransientObjects.CreateColor(255, 255, 255, 1); //white
-                    Color mBtmClr = mInv.TransientObjects.CreateColor(211, 211, 211, 1); //light grey
+                    Inventor.Color mTopClr = mInv.TransientObjects.CreateColor(255, 255, 255, 1); //white
+                    Inventor.Color mBtmClr = mInv.TransientObjects.CreateColor(211, 211, 211, 1); //light grey
 
                     mCamera.SaveAsBitmap(mExpFileName, 1280, 768, mTopClr, mBtmClr);
 
@@ -732,15 +764,25 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     mTrace.WriteLine("Source file closed");
                 }
 
-                if (item == "NWD" && mNavisworksAutomation != null)
+                if ((item == "NWD" || item == "NWD+DWF") && mNavisworksAutomation != null)
                 {
-                    //delete existing export file; note the resulting file name is e.g. "Drawing.idw.dwg
-                    string mExpFileName = mDocPath + ".nwd";
-                    if (System.IO.File.Exists(mExpFileName))
+                    //delete existing export files; note the resulting file name is e.g. "Assembly.iam.nwd
+                    string mNWDName = mDocPath + ".nwd";
+                    if (System.IO.File.Exists(mNWDName))
                     {
-                        System.IO.FileInfo fileInfo = new FileInfo(mExpFileName);
+                        System.IO.FileInfo fileInfo = new FileInfo(mNWDName);
                         fileInfo.IsReadOnly = false;
                         fileInfo.Delete();
+                    }
+                    string mNWDWFName = mDocPath + ".dwf";
+                    if (item == "NWD+DWF")
+                    {
+                        if (System.IO.File.Exists(mNWDWFName))
+                        {
+                            System.IO.FileInfo dwfInfo = new FileInfo(mNWDWFName);
+                            dwfInfo.IsReadOnly = false;
+                            dwfInfo.Delete();
+                        }
                     }
 
                     mTrace.IndentLevel += 1;
@@ -754,22 +796,44 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         mNavisworksAutomation.OpenFile(mDocPath);
 
                         //save the new navisworks
-                        mNavisworksAutomation.SaveFile(mExpFileName);
+                        mNavisworksAutomation.SaveFile(mNWDName);
+
+                        //export DWF
+                        if (item == "NWD+DWF")
+                        {
+                            mNavisworksAutomation.ExecuteAddInPlugin("NativeExportPluginAdaptor_LcDwfExporterPlugin_Export.Navisworks", @mNWDWFName);
+                        }
                         //Navisworks.EnableProgress();
 
                         //collect all export files for later upload
-                        mUploadFiles.Add(mExpFileName);
-                        System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mUploadFiles.LastOrDefault());
+                        System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mNWDName);
                         if (mExportFileInfo.Exists)
                         {
+                            mUploadFiles.Add(mNWDName);
                             mTrace.WriteLine("Navisworks created file: " + mUploadFiles.LastOrDefault());
                             mTrace.IndentLevel -= 1;
                         }
                         else
                         {
                             mResetIpj(mSaveProject);
-                            throw new Exception("Validating the export file " + mExpFileName + " before upload failed.");
+                            throw new Exception("Validating the export file " + mNWDName + " before upload failed.");
                         }
+                        if (item == "NWD+DWF")
+                        {
+                            System.IO.FileInfo mExportDwfFileInfo = new System.IO.FileInfo(mNWDWFName);
+                            if (mExportDwfFileInfo.Exists)
+                            {
+                                mUploadFiles.Add(mNWDWFName);
+                                mTrace.WriteLine("Navisworks created file: " + mUploadFiles.LastOrDefault());
+                                mTrace.IndentLevel -= 1;
+                            }
+                            else
+                            {
+                                mResetIpj(mSaveProject);
+                                throw new Exception("Validating the export file " + mNWDWFName + " before upload failed.");
+                            }
+                        }
+
                         //check if an NWC file has been created; if so, upload it                        
                         System.IO.FileInfo mDocInfo = new System.IO.FileInfo(mDocPath);
                         string mNWC = mDocPath.Replace(mDocInfo.Extension, ".nwc");
@@ -791,7 +855,6 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                                 mUploadFiles.Add(mNwcUpload);
                             }
                         }
-
                     }
                     catch (Autodesk.Navisworks.Api.Automation.AutomationException e)
                     {
@@ -808,6 +871,71 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     finally
                     {
                         mNavisworksDispose();
+                    }
+
+                }
+
+                if (item == "SLDDRW.PDF")
+                {
+                    string mPDFName = mDocPath + ".pdf";
+                    if (System.IO.File.Exists(mPDFName))
+                    {
+                        System.IO.FileInfo fileInfo = new FileInfo(mPDFName);
+                        fileInfo.IsReadOnly = false;
+                        fileInfo.Delete();
+                    }
+
+                    mTrace.IndentLevel += 1;
+                    mTrace.WriteLine("SLDDRW -> PDF Export starts...");
+
+                    try
+                    {
+                        //open the file with Solidworks
+                        sldWorks.OpenDoc6(mDocPath, (int)swDocumentTypes_e.swDocDRAWING, (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", 0, 0);
+                        //sldWorks.OpenDoc(mDocPath, (int)swDocumentTypes_e.swDocDRAWING);
+
+                        //export the file as PDF
+                        ModelDoc2 swModel = (ModelDoc2)sldWorks.ActiveDoc;
+                        DrawingDoc swDraw = (DrawingDoc)swModel;
+
+                        // Save as PDF                        
+                        int errors = 0;
+                        int warnings = 0;
+                        bool status = swModel.Extension.SaveAs(mPDFName, (int)swSaveAsVersion_e.swSaveAsCurrentVersion, (int)swSaveAsOptions_e.swSaveAsOptions_Silent, null, ref errors, ref warnings);
+
+                        if (status)
+                        {
+                            Console.WriteLine("File saved successfully as PDF.");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Failed to save file as PDF. Errors: {errors}, Warnings: {warnings}");
+                        }
+
+                        //collect all export files for later upload
+                        System.IO.FileInfo mExportFileInfo = new System.IO.FileInfo(mPDFName);
+                        if (mExportFileInfo.Exists)
+                        {
+                            mUploadFiles.Add(mPDFName);
+                            mTrace.WriteLine("Solidworks created file: " + mUploadFiles.LastOrDefault());
+                            mTrace.IndentLevel -= 1;
+                        }
+                        else
+                        {
+                            mResetIpj(mSaveProject);
+                            throw new Exception("Validating the export file " + mPDFName + " before upload failed.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        mResetIpj(mSaveProject);
+                        throw new Exception("Solidworks Export Failed: " + ex.Message);
+                    }
+                    finally
+                    {
+                        sldWorks.CloseAllDocuments(true);
+                        //todo: check if other Solidworks jobs are in the queue and keep the application open
+                        mSldworksDispose();
                     }
 
                 }
@@ -864,8 +992,17 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         var folderEntity = new Autodesk.DataManagement.Client.Framework.Vault.Currency.Entities.Folder(connection, mFolder);
                         try
                         {
-                            addedFile = connection.FileManager.AddFile(folderEntity, "Created by ExportSampleJob", null, null, ACW.FileClassification.DesignRepresentation, false, vdfPath);
-                            mExpFile = addedFile;
+                            //check if the file is a DWF file to upload as a hidden file
+                            if (mExportFileInfo.Extension.ToLower() == ".dwf")
+                            {
+                                addedFile = connection.FileManager.AddFile(folderEntity, "Created by ExportSampleJob", null, null, ACW.FileClassification.DesignVisualization, true, vdfPath);
+                                mExpFile = addedFile;
+                            }
+                            else
+                            {
+                                addedFile = connection.FileManager.AddFile(folderEntity, "Created by ExportSampleJob", null, null, ACW.FileClassification.DesignRepresentation, false, vdfPath);
+                                mExpFile = addedFile;
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -887,8 +1024,17 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                         var results = connection.FileManager.AcquireFiles(aqSettings);
                         try
                         {
-                            mUploadedFile = connection.FileManager.CheckinFile(results.FileResults.First().File, "Created by ExportSampleJob", false, null, null, false, null, ACW.FileClassification.DesignRepresentation, false, vdfPath);
-                            mExpFile = mUploadedFile;
+                            //check if the file is a DWF file to upload as a hidden file
+                            if (vdfFile.FileClassification == ACW.FileClassification.DesignVisualization)
+                            {
+                                mUploadedFile = connection.FileManager.CheckinFile(results.FileResults.First().File, "Created by ExportSampleJob", false, null, null, false, null, ACW.FileClassification.DesignVisualization, true, vdfPath);
+                                mExpFile = mUploadedFile;
+                            }
+                            else
+                            {
+                                mUploadedFile = connection.FileManager.CheckinFile(results.FileResults.First().File, "Created by ExportSampleJob", false, null, null, false, null, ACW.FileClassification.DesignRepresentation, false, vdfPath);
+                                mExpFile = mUploadedFile;
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -916,73 +1062,80 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                 }
 
                 //synchronize source file properties to export file properties for UDPs assigned to both
-                try
+                if (mExpFile.FileClass != ACW.FileClassification.DesignVisualization)
                 {
-                    mTrace.WriteLine(mExpFile.Name + ": Job tries synchronizing properties in Vault.");
-                    //get the design rep category's user properties
-                    ACET.IExplorerUtil mExplUtil = Autodesk.Connectivity.Explorer.ExtensibilityTools.ExplorerLoader.LoadExplorerUtil(
-                                connection.Server, connection.Vault, connection.UserID, connection.Ticket);
-                    Dictionary<ACW.PropDef, object> mPropDictonary = new Dictionary<ACW.PropDef, object>();
-
-                    //get property definitions filtered to UDPs
-                    VDF.Vault.Currency.Properties.PropertyDefinitionDictionary mPropDefDic = connection.PropertyManager.GetPropertyDefinitions(
-                        VDF.Vault.Currency.Entities.EntityClassIds.Files, null, VDF.Vault.Currency.Properties.PropertyDefinitionFilter.IncludeUserDefined);
-
-                    VDF.Vault.Currency.Properties.PropertyDefinition mPropDef = new PropertyDefinition();
-                    ACW.PropInst[] mSourcePropInsts = mWsMgr.PropertyService.GetProperties("FILE", new long[] { mFile.Id }, new long[] { mPropDef.Id });
-
-                    //get property definitions assigned to Design Representation category
-                    ACW.CatCfg catCfg1 = mWsMgr.CategoryService.GetCategoryConfigurationById(mExpFile.Cat.CatId, new string[] { "UserDefinedProperty" });
-                    List<long> mFilePropDefs = new List<long>();
-                    foreach (ACW.Bhv bhv in catCfg1.BhvCfgArray.First().BhvArray)
+                    try
                     {
-                        mFilePropDefs.Add(bhv.Id);
-                    }
+                        mTrace.WriteLine(mExpFile.Name + ": Job tries synchronizing properties in Vault.");
+                        //get the design rep category's user properties
+                        ACET.IExplorerUtil mExplUtil = Autodesk.Connectivity.Explorer.ExtensibilityTools.ExplorerLoader.LoadExplorerUtil(
+                                    connection.Server, connection.Vault, connection.UserID, connection.Ticket);
+                        Dictionary<ACW.PropDef, object> mPropDictonary = new Dictionary<ACW.PropDef, object>();
 
-                    //get properties assigned to source file and add definition/value pair to dictionary
-                    mSourcePropInsts = mWsMgr.PropertyService.GetProperties("FILE", new long[] { mFile.Id }, mFilePropDefs.ToArray());
-                    if (mSourcePropInsts != null)
-                    {
-                        ACW.PropDef[] propDefs = connection.WebServiceManager.PropertyService.GetPropertyDefinitionsByEntityClassId("FILE");
-                        foreach (ACW.PropInst item in mSourcePropInsts)
+                        //get property definitions filtered to UDPs
+                        VDF.Vault.Currency.Properties.PropertyDefinitionDictionary mPropDefDic = connection.PropertyManager.GetPropertyDefinitions(
+                            VDF.Vault.Currency.Entities.EntityClassIds.Files, null, VDF.Vault.Currency.Properties.PropertyDefinitionFilter.IncludeUserDefined);
+
+                        VDF.Vault.Currency.Properties.PropertyDefinition mPropDef = new PropertyDefinition();
+                        ACW.PropInst[] mSourcePropInsts = mWsMgr.PropertyService.GetProperties("FILE", new long[] { mFile.Id }, new long[] { mPropDef.Id });
+
+                        //get property definitions assigned to Design Representation category
+                        ACW.CatCfg catCfg1 = mWsMgr.CategoryService.GetCategoryConfigurationById(mExpFile.Cat.CatId, new string[] { "UserDefinedProperty" });
+                        List<long> mFilePropDefs = new List<long>();
+
+                        foreach (ACW.Bhv bhv in catCfg1.BhvCfgArray.First().BhvArray)
                         {
-                            mPropDef = connection.PropertyManager.GetPropertyDefinitionById(item.PropDefId);
-                            ACW.PropDef propDef = propDefs.SingleOrDefault(n => n.Id == item.PropDefId);
-                            mPropDictonary.Add(propDef, item.Val);
+                            mFilePropDefs.Add(bhv.Id);
                         }
 
-                        //update export file using the property dictionary; note this the IExplorerUtil method bumps file iteration and requires no check out
-                        mExplUtil.UpdateFileProperties(mExpFile, mPropDictonary);
-                        mExpFile = (mWsMgr.DocumentService.GetLatestFileByMasterId(mExpFile.MasterId));
-                    }
-                }
+                        //get properties assigned to source file and add definition/value pair to dictionary
+                        mSourcePropInsts = mWsMgr.PropertyService.GetProperties("FILE", new long[] { mFile.Id }, mFilePropDefs.ToArray());
+                        if (mSourcePropInsts != null)
+                        {
+                            ACW.PropDef[] propDefs = connection.WebServiceManager.PropertyService.GetPropertyDefinitionsByEntityClassId("FILE");
+                            foreach (ACW.PropInst item in mSourcePropInsts)
+                            {
+                                mPropDef = connection.PropertyManager.GetPropertyDefinitionById(item.PropDefId);
+                                ACW.PropDef propDef = propDefs.SingleOrDefault(n => n.Id == item.PropDefId);
+                                mPropDictonary.Add(propDef, item.Val);
+                            }
 
-                catch (Exception ex)
-                {
-                    mTrace.WriteLine("Job failed copying properties from source file " + mFile.Name + " to export file: " + mExpFile.Name + " . Exception details: " + ex);
-                    //you may uncomment the action below if the job should abort executing due to failures copying property values
-                    //throw new Exception("Job failed copying properties from source file " + mFile.Name + " to export file: " + mExpFile.Name + " . Exception details: " + ex.ToString() + " ");
+                            //update export file using the property dictionary; note this the IExplorerUtil method bumps file iteration and requires no check out
+                            mExplUtil.UpdateFileProperties(mExpFile, mPropDictonary);
+                            mExpFile = (mWsMgr.DocumentService.GetLatestFileByMasterId(mExpFile.MasterId));
+                        }
+                    }                   
+
+                    catch (Exception ex)
+                    {
+                        mTrace.WriteLine("Job failed copying properties from source file " + mFile.Name + " to export file: " + mExpFile.Name + " . Exception details: " + ex);
+                        //you may uncomment the action below if the job should abort executing due to failures copying property values
+                        //throw new Exception("Job failed copying properties from source file " + mFile.Name + " to export file: " + mExpFile.Name + " . Exception details: " + ex.ToString() + " ");
+                    }
                 }
 
                 //align lifecycle states of export to source file's state name
-                try
+                if (mExpFile.FileClass == ACW.FileClassification.DesignVisualization)
                 {
-                    mTrace.WriteLine(mExpFile.Name + ": Job tries synchronizing lifecycle state in Vault.");
-                    Dictionary<string, long> mTargetStateNames = new Dictionary<string, long>();
-                    ACW.LfCycDef mTargetLfcDef = (mWsMgr.LifeCycleService.GetLifeCycleDefinitionsByIds(new long[] { mExpFile.FileLfCyc.LfCycDefId })).FirstOrDefault();
-                    foreach (var item in mTargetLfcDef.StateArray)
+                    try
                     {
-                        mTargetStateNames.Add(item.DispName, item.Id);
+                        mTrace.WriteLine(mExpFile.Name + ": Job tries synchronizing lifecycle state in Vault.");
+                        Dictionary<string, long> mTargetStateNames = new Dictionary<string, long>();
+                        ACW.LfCycDef mTargetLfcDef = (mWsMgr.LifeCycleService.GetLifeCycleDefinitionsByIds(new long[] { mExpFile.FileLfCyc.LfCycDefId })).FirstOrDefault();
+                        foreach (var item in mTargetLfcDef.StateArray)
+                        {
+                            mTargetStateNames.Add(item.DispName, item.Id);
+                        }
+                        mTargetStateNames.TryGetValue(mFile.FileLfCyc.LfCycStateName, out long mTargetLfcStateId);
+                        mWsMgr.DocumentServiceExtensions.UpdateFileLifeCycleStates(new long[] { mExpFile.MasterId }, new long[] { mTargetLfcStateId }, "Lifecycle state synchronized ExportSampleJob");
                     }
-                    mTargetStateNames.TryGetValue(mFile.FileLfCyc.LfCycStateName, out long mTargetLfcStateId);
-                    mWsMgr.DocumentServiceExtensions.UpdateFileLifeCycleStates(new long[] { mExpFile.MasterId }, new long[] { mTargetLfcStateId }, "Lifecycle state synchronized ExportSampleJob");
-                }
-                catch (Exception ex)
-                {
-                    mTrace.WriteLine("Job failed aligning lifecycle states of source file " + mFile.Name + " and export file: " + mExpFile.Name + " . Exception details: " + ex);
+                    catch (Exception ex)
+                    {
+                        mTrace.WriteLine("Job failed aligning lifecycle states of source file " + mFile.Name + " and export file: " + mExpFile.Name + " . Exception details: " + ex);
+                    }
                 }
 
-                //attach export file to source file leveraging design representation attachment type
+                //attach export file to source file leveraging design representation attachment type; for DWF files use visualization attachment type
                 try
                 {
                     mTrace.WriteLine(mExpFile.Name + ": Job tries to attach to its source in Vault.");
@@ -994,7 +1147,16 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
                     mAssocParam.Typ = ACW.AssociationType.Attachment;
                     //refresh the parent file to the latest version id; default jobs like sync props or update rev.table might have updated the parent already
                     mFile = (mWsMgr.DocumentService.GetLatestFileByMasterId(mFile.MasterId));
-                    mWsMgr.DocumentService.AddDesignRepresentationFileAttachment(mFile.Id, mAssocParam);
+                    if (mExpFile.FileClass == ACW.FileClassification.DesignVisualization)
+                    {
+                        mWsMgr.DocumentService.AddDesignVisualizationFileAttachment(mFile.Id, mAssocParam);
+                        mFile = (mWsMgr.DocumentService.GetLatestFileByMasterId(mFile.MasterId));
+                        mWsMgr.DocumentService.SetDesignVisualizationAttachmentStatusById(mFile.Id, ACW.DesignVisualizationAttachmentStatus.Syncronized);
+                    }
+                    else
+                    {
+                        mWsMgr.DocumentService.AddDesignRepresentationFileAttachment(mFile.Id, mAssocParam);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -1042,6 +1204,28 @@ namespace Autodesk.VltInvSrv.ExportSampleJob
             {
                 mNavisworksAutomation.Dispose();
                 mNavisworksAutomation = null;
+            }
+        }
+
+        private SldWorks mGetSldworks()
+        {
+            sldWorks = Activator.CreateInstance(Type.GetTypeFromProgID("SldWorks.Application")) as SldWorks;
+            if (sldWorks != null)
+            {
+                return sldWorks;
+            }
+            else
+            {
+                throw new Exception("Job could not start a SolidWorks instance.");
+            }
+        }
+
+        private void mSldworksDispose()
+        {
+            if (sldWorks != null)
+            {
+                sldWorks.ExitApp();
+                sldWorks = null;
             }
         }
 
